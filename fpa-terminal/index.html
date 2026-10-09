@@ -763,7 +763,7 @@ select,input[type=text],input[type=number],input[type=date],textarea{border-radi
     <div class="intro" id="dashRange"></div>
     <div class="kpis k8" id="dashKpis"></div>
     <div class="grid g21">
-      <div class="panel"><div class="ph"><h2 id="trendTitle">Trend</h2><div class="legend aside" id="trendLegend"></div></div><div class="pb" id="dashTrend"></div><div class="pb note" style="padding-top:0">Click a bar to drill into that period.</div></div>
+      <div class="panel"><div class="ph"><h2 id="trendTitle">Trend</h2><div class="seg" id="trendMode" role="group" aria-label="Chart shows"><button data-v="across" aria-pressed="true">Across the year</button><button data-v="in" aria-pressed="false">Inside the period</button></div><div class="legend aside" id="trendLegend"></div></div><div class="pb note" id="trendBest" aria-live="polite" style="padding-bottom:0"></div><div class="pb" id="dashTrend"></div><div class="pb note" id="trendNote" style="padding-top:0">Click a bar to drill into that period.</div></div>
       <div class="panel"><div class="ph"><h2>By product</h2><span class="aside">click to filter</span></div><div class="pb hb" id="dashProd"></div></div>
     </div>
     <div class="grid g2">
@@ -2131,7 +2131,7 @@ function errCopy(e){
 const state = { src:{is:null,bs:null,cf:null,all:null}, mode3:true, ext:null, model:null, isSample:false, sample:null,
   ops:null, opexAct:null, opexModeled:true, yrs:null, drv:[], nhc:{}, wf:[], bud:null, rf:{asOf:null,H:12,m:"blend"},
   v:{ym:null,w:"m"}, scen:"base", A:null, D:null, ue:null, iv:null, memoText:"", turns:[], flags:[], tab:"load", slide:0,
-  dash:{g:"month",a:null,from:null,to:null,cmp:"prev",p:"",r:"",c:""}, prof:{d:"p",per:"",alloc:"rev"}, cf:{mode:"w"} };
+  dash:{g:"month",a:null,from:null,to:null,cmp:"prev",p:"",r:"",c:"",view:"across"}, prof:{d:"p",per:"",alloc:"rev"}, cf:{mode:"w"} };
 
 /* ---------- small utils ---------- */
 const sum = a => a.reduce((x,y)=>x+(y||0),0);
@@ -2519,6 +2519,17 @@ function bucketsFor(rg){ const B=[]; const g=state.dash.g;
   else if(rg.sub==="week"){ const w0=rg.s-((dd(rg.s).w+6)%7); for(let d=w0;d<=rg.e;d+=7){ const w=isoWeek(d); B.push({s:Math.max(d,rg.s),e:Math.min(d+6,rg.e),l:"W"+w.wk,k:"week",a:d}); } }
   else { for(let ym=ymOf(rg.s);ym<=ymOf(rg.e);ym++) B.push({s:Math.max(ymStart(ym),rg.s),e:Math.min(ymEnd(ym),rg.e),l:ymLabel(ym),k:"month",a:ymStart(ym)}); }
   return B; }
+/* "Across" chart: the selected period's siblings in its year (12 months, 4 quarters, ISO weeks…), so periods can be ranked against each other */
+const ACROSS={week:"week",month:"month",quarter:"quarter",half:"half-year",year:"year"};
+function acrossBuckets(g,a){ const o=state.ops, x=dd(a), B=[];
+  if(g==="week"){ const w=isoWeek(a); for(let k=1;k<=weeksIn(w.y);k++){ const s=weekStart(w.y,k); B.push({s,e:s+6,l:"W"+k,a:s,cur:k===w.wk}); } }
+  else if(g==="month") for(let m=1;m<=12;m++){ const ym=x.y*12+m-1; B.push({s:ymStart(ym),e:ymEnd(ym),l:MON[m-1],a:ymStart(ym),cur:m===x.m}); }
+  else if(g==="quarter") for(let q=0;q<4;q++) B.push({s:dn(x.y,q*3+1,1),e:ymEnd(x.y*12+q*3+2),l:"Q"+(q+1),a:dn(x.y,q*3+1,1),cur:q===Math.floor((x.m-1)/3)});
+  else if(g==="half") for(let h=0;h<2;h++) B.push({s:dn(x.y,h*6+1,1),e:ymEnd(x.y*12+h*6+5),l:"H"+(h+1),a:dn(x.y,h*6+1,1),cur:h===(x.m<=6?0:1)});
+  else for(let y=dd(o.min).y;y<=dd(o.max).y;y++) B.push({s:dn(y,1,1),e:dn(y,12,31),l:"FY"+y,a:dn(y,1,1),cur:y===x.y});
+  B.forEach(b=>{ b.none=b.s>o.max||b.e<o.min; b.part=!b.none&&(b.s<o.min||b.e>o.max); if(b.part) b.l+="*"; }); return B; }
+function sumRange(s,e,f){ const o=state.ops; let rev=0,cogs=0; for(let j=bs(o.rows,s);j<o.rows.length;j++){ const r=o.rows[j]; if(r.d>e) break; if(f.p!==""&&r.p!==+f.p) continue; if(f.r!==""&&r.r!==+f.r) continue; if(f.c!==""&&r.c!==+f.c) continue; rev+=r.rev; cogs+=r.cogs; } return {rev,cogs}; }
+function lastYear(g,b){ if(g==="week"){ const w=isoWeek(b.a), s=weekStart(w.y-1,Math.min(w.wk,weeksIn(w.y-1))); return {s,e:s+6}; } return {s:addMonths(b.s,-12),e:addMonths(b.e+1,-12)-1}; }
 function bs(rows,d){ let lo=0,hi=rows.length; while(lo<hi){ const m=(lo+hi)>>1; if(rows[m].d<d) lo=m+1; else hi=m; } return lo; }
 function aggRange(s,e,f,W){
   const o=state.ops, np=o.P.length; const T={rev:0,cogs:0,u:0,n:0,cust:new Set(),newC:0,p:new Float64Array(np),pg:new Float64Array(np),r:new Float64Array(o.R.length),c:new Map()};
@@ -2578,13 +2589,25 @@ function renderDash(){
     {k:"Transactions",v:na?"n/a":fmtN(T.n),s:C&&C.n!=null&&!na?dl(d(T.n,C.n)):""},
     {k:"Active customers",v:custOk?fmtN(T.cust.size):"n/a",s:C&&C.cust!=null&&custOk?dl(d(T.cust.size,C.cust)):""},
     {k:"New customers",v:custOk?fmtN(T.newC):"n/a",s:C&&C.newC!=null&&custOk?dl(d(T.newC,C.newC)):""}]);
-  $("#trendTitle").textContent=`Revenue by ${rg.sub}${D.g==="day"?" · trailing 30 days":""}`;
-  const hi=D.g==="day"?[B.length-1]:[];
-  const gmB=Array.from(W.rev,(v,i)=>v?(v-W.cogs[i])/v:null);
-  const series=[{name:"Revenue",vals:Array.from(W.rev),color:"var(--amber)"}]; if(CB) series.unshift({name:cmpL==="budget"?"Budget":"Comparison",vals:CB,color:"var(--bar)"});
-  legend($("#trendLegend"),[...(CB?[{n:cmpL==="budget"?"Budget":"Comparison period",c:"var(--bar)"}]:[]),{n:"Revenue",c:"var(--amber)"},{n:"Gross margin",c:"var(--cyan)",line:1}]);
-  combo($("#dashTrend"),{labels:B.map(x=>x.l),bars:series,lines:[{name:"Gross margin",vals:gmB,color:"var(--cyan)",axis:"R",fmt:v=>fmtP(v),noDots:B.length>31}],hi,labW:B.length>20?34:46,aria:"Revenue trend",
-    onClick:i=>{ const x=B[i]; if(!x) return; if(x.k==="day"){ D.g="day"; D.a=x.s; } else if(x.k==="week"){ D.g="week"; D.a=x.a; } else { D.g="month"; D.a=x.a; } renderDash(); }});
+  const can=!!ACROSS[D.g], across=can&&D.view!=="in", unit=ACROSS[D.g], yr=D.g==="week"?String(isoWeek(D.a).y):"FY"+dd(D.a).y;
+  $("#trendMode").hidden=!can; if(can) $("#trendMode").querySelectorAll("button").forEach(b=>{ b.setAttribute("aria-pressed",String((b.dataset.v==="across")===across)); b.textContent=b.dataset.v==="across"?(D.g==="year"?"All years":`Across ${yr}`):`Inside this ${unit}`; });
+  let lab, rev, gmB, cmpS=null, cmpN="", hi, best="", note, click;
+  if(across){ const AB=acrossBuckets(D.g,D.a), S=AB.map(b=>b.none?null:sumRange(b.s,b.e,f));
+    lab=AB.map(b=>b.l); rev=S.map(x=>x&&x.rev); gmB=S.map(x=>x&&x.rev?(x.rev-x.cogs)/x.rev:null); hi=AB.map((b,i)=>b.cur?i:-1).filter(i=>i>=0);
+    if(D.cmp==="bud"&&D.r===""&&D.c===""){ cmpS=AB.map(b=>budRange(b.s,b.e,D.p)?.rev??null); cmpN="Budget"; if(cmpS.every(v=>v==null)) cmpS=null; }
+    else if((D.cmp==="prev"||D.cmp==="yoy")&&D.g!=="year"){ cmpS=AB.map(b=>{ const y=lastYear(D.g,b); return y.e<o.min||y.s>o.max?null:sumRange(y.s,y.e,f).rev; }); cmpN="Same period last year"; }
+    const full=AB.map((b,i)=>!b.none&&!b.part&&rev[i]?i:-1).filter(i=>i>=0), k=full.length>1?full.reduce((m,i)=>rev[i]>rev[m]?i:m):-1;
+    if(k>=0) best=`Best ${unit}: <b>${esc(AB[k].l)}</b> · ${fmtC(rev[k])}`;
+    $("#trendTitle").textContent=D.g==="year"?"Revenue by year":`Revenue by ${unit} · ${yr}`;
+    note=`Highlighted: the selected ${unit}. Click a bar to select that ${unit}.${AB.some(b=>b.part)?" * partial: the data does not cover the whole "+unit+", so it is left out of the best.":""}`;
+    click=i=>{ const x=AB[i]; if(!x||x.none) return; D.a=x.a; renderDash(); }; }
+  else { lab=B.map(x=>x.l); rev=Array.from(W.rev); gmB=Array.from(W.rev,(v,i)=>v?(v-W.cogs[i])/v:null); cmpS=CB; cmpN=cmpL==="budget"?"Budget":"Comparison period"; hi=D.g==="day"?[B.length-1]:[];
+    $("#trendTitle").textContent=`Revenue by ${rg.sub}${D.g==="day"?" · trailing 30 days":""}`; note="Click a bar to drill into that period.";
+    click=i=>{ const x=B[i]; if(!x) return; if(x.k==="day"){ D.g="day"; D.a=x.s; } else if(x.k==="week"){ D.g="week"; D.a=x.a; } else { D.g="month"; D.a=x.a; } renderDash(); }; }
+  $("#trendBest").innerHTML=best; $("#trendNote").textContent=note;
+  const series=[{name:"Revenue",vals:rev,color:"var(--amber)"}]; if(cmpS) series.unshift({name:cmpN,vals:cmpS,color:"var(--bar)"});
+  legend($("#trendLegend"),[...(cmpS?[{n:cmpN,c:"var(--bar)"}]:[]),{n:"Revenue",c:"var(--amber)"},{n:"Gross margin",c:"var(--cyan)",line:1}]);
+  combo($("#dashTrend"),{labels:lab,bars:series,lines:[{name:"Gross margin",vals:gmB,color:"var(--cyan)",axis:"R",fmt:v=>fmtP(v),noDots:lab.length>31}],hi,labW:lab.length>20?34:46,aria:"Revenue trend",onClick:click});
   const tog=(k,v)=>{ D[k]=String(D[k])===String(v)?"":String(v); renderDash(); };
   hbars($("#dashProd"),[...T.p.keys()].filter(i=>T.p[i]).sort((a,b)=>T.p[b]-T.p[a]).map(i=>({k:i,label:o.P[i],v:T.p[i],sub:T.p[i]?fmtP(T.pg[i]/T.p[i],0)+" GM":""})),{active:D.p,onClick:k=>tog("p",k)});
   hbars($("#dashReg"),[...T.r.keys()].filter(i=>T.r[i]).sort((a,b)=>T.r[b]-T.r[a]).map(i=>({k:i,label:o.R[i],v:T.r[i],sub:T.rev?fmtP(T.r[i]/T.rev,0):""})),{active:D.r,onClick:k=>tog("r",k)});
@@ -3161,6 +3184,7 @@ function loadSample(){
 $("#sampleBtn").addEventListener("click",()=>{ loadSample(); showTab(state.tab); });
 
 /* ---- module controls ---- */
+$("#trendMode").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b||!state.ops) return; state.dash.view=b.dataset.v; renderDash(); });
 $("#granSeg").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b||!state.ops) return; const D=state.dash, o=state.ops; const prev=D.g; D.g=b.dataset.g;
   D.a=clamp(D.a,o.min,o.max); if(["day","mtd","qtd","ytd"].includes(D.g)&&!["day","mtd","qtd","ytd"].includes(prev)){ const x=dashRange(prev,D.a); D.a=clamp(x.e,o.min,o.max); }
   if(D.g==="custom"){ const x=dashRange(prev==="custom"?"month":prev,D.a); D.from=Math.max(x.s,o.min); D.to=Math.min(x.e,o.max); } renderDash(); });
@@ -4851,6 +4875,16 @@ function wbDeleteSel(){ const b=curBoard(); if(!b) return; const ids=[...(WB.mse
 function lsSnap(){ const o={}; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); o[k]=localStorage.getItem(k); } }catch(e){} return o; }
 function lsRestore(o){ let n=0; try{ const now=lsSnap(); Object.keys(now).forEach(k=>{ if(!(k in o)){ localStorage.removeItem(k); n++; } }); Object.entries(o).forEach(([k,v])=>{ if(now[k]!==v){ localStorage.setItem(k,v); n++; } }); }catch(e){} return n; }
 const pct2=v=>v==null||!isFinite(v)?"n/a":(v*100).toFixed(2)+"%";
+/* self-test 24: dashboard "across the year" chart — buckets tile the year, best = max, KPIs independent of the chart mode */
+function selfTest24(){ const o=state.ops, D=state.dash, keep={...D};
+  try{ const f={p:"",r:"",c:""}, y=dd(o.max).y-1, yr=sumRange(dn(y,1,1),dn(y,12,31),f).rev, tot=g=>sum(acrossBuckets(g,dn(y,6,15)).map(b=>sumRange(b.s,b.e,f).rev));
+    const M=acrossBuckets("month",dn(y,6,15)), Q=acrossBuckets("quarter",dn(y,6,15)), tile=Math.abs(tot("month")-yr)<1e-6*Math.max(1,yr)&&Math.abs(tot("quarter")-yr)<1e-6*Math.max(1,yr);
+    Object.assign(D,{g:"month",a:dn(y,6,1),cmp:"yoy",p:"",r:"",c:"",view:"across"}); renderDash(); const k1=$("#dashKpis").innerText, best=$("#trendBest").textContent, bars=$("#dashTrend").querySelectorAll("rect").length;
+    const mv=M.map(b=>sumRange(b.s,b.e,f).rev), bi=mv.indexOf(Math.max(...mv)), bestOk=best.includes(M[bi].l);
+    D.view="in"; renderDash(); const k2=$("#dashKpis").innerText, inTitle=$("#trendTitle").textContent;
+    const ok=M.length===12&&Q.length===4&&tile&&bestOk&&k1===k2&&/by day/.test(inTitle)&&bars>0;
+    return {ok,actual:`FY${y}: 12 months and 4 quarters sum to the year ${tile?"exactly":"NOT"} · ${best||"no best"} (max = ${M[bi].l}) · KPIs ${k1===k2?"identical":"differ"} in both chart modes · inside view: ${inTitle}`}; }
+  finally{ Object.assign(D,keep); } }
 function selfTestRun(){
   const ls=lsSnap(), keep={}, plain=v=>v&&typeof v==="object"&&Object.getPrototypeOf(v)===Object.prototype;
   Object.keys(state).forEach(k=>{ const v=state[k]; keep[k]=plain(v)?{...v}:Array.isArray(v)?v.slice():v; });
@@ -4886,6 +4920,7 @@ function selfTestRun(){
     t("SEC 10-K PDF: late statements, cover metadata, expense signs and balance-sheet context",selfTest21);
     t("Residual uses reported cash-flow working-capital lines when balance-sheet AR is absent",selfTest22);
     t("Revenue growth: 3 reported years give 2 growth rates, first year n/a, last actual column filled, forecast = assumptions",selfTest23);
+    t("Dashboard: across-the-year chart ranks months, quarters and weeks; KPIs unchanged",()=>{ loadSample(); return selfTest24(); });
   } finally {
     Object.keys(state).forEach(k=>{ if(!(k in keep)) delete state[k]; }); Object.assign(state,keep);
     slots.forEach(s=>{ s.el.className=s.cls; s.el.querySelector(".fn").textContent=s.fn; s.el.querySelector(".meta").textContent=s.meta; });
