@@ -13,6 +13,17 @@ backend, no install, no spreadsheet.
 
 ## What it does
 
+### Load real financial statements
+- Reads PitchBook / Capital IQ-style Excel exports, SEC 10-K PDFs, CSV and TXT. Statement pages are found automatically in long filings (a 122-page 10-K is handled).
+- Detects company name, ticker, exchange, currency, units (thousands / millions) and a business-model lens (SaaS, retail, industrial, banks, energy, real estate, general corporate).
+- Handles source quirks: sign conventions, lease-inclusive debt, amortization embedded in cost of revenue (content-heavy companies), share counts reported in thousands.
+
+### Validated against source data
+The parsers are reconciled line by line against the source files. Example: the same company loaded from a raw 10-K PDF and from a PitchBook export matches to the dollar on every shared line (revenue to net income, balance sheet, debt, cash flow, EBITDA, free cash flow), and the DCF values agree within 2% once the same WACC is applied. Remaining differences are source presentation (a 10-K reports three years where PitchBook reports five).
+
+### Market view
+Enter a share price (never stored) to see market cap, EV/EBITDA, P/E, FCF yield and the growth rate the market price implies (reverse DCF). The DCF value is an intrinsic value today, not a 12-month price target.
+
 ### Integrated three-statement model
 - Linked income statement, balance sheet and cash flow statement driven off a
   single assumption set (revenue drivers, opex, working capital, capex).
@@ -79,8 +90,7 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 - **Single file.** `index.html` contains the markup, styling and the full
   calculation engine — no build step, no dependencies to install.
 - **No backend.** All modelling, simulation and charting runs in the browser.
-- **Only external requests** are the Google Fonts stylesheets (IBM Plex Mono,
-  IBM Plex Sans Condensed, Montserrat); the app works offline without them.
+- **External requests.** Runs entirely in the browser. Google Fonts are optional. Excel and PDF import/export load SheetJS and pdf.js from cdnjs on demand, so those features need a connection; the built-in sample works offline. Nothing you load is uploaded anywhere.
 - Charts and tables are rendered from the model's own output, so every figure on
   screen is traceable back to an assumption.
 
@@ -89,6 +99,10 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 Built as a demonstration of FP&A, valuation and capital-allocation methodology.
 The sample company and all figures are illustrative. Nothing here is investment
 advice.
+
+## License
+
+Copyright (c) 2026 Minh-Duc Theo HO. All rights reserved. Viewing and evaluation only, see [LICENSE](../LICENSE).
 
 ## Author
 
