@@ -4,6 +4,6 @@ capture/
 
 # Build + tooling output
 node_modules/
-renders/
+# renders/ — the delivered MP4 is kept in the repo
 snapshots/
 .hyperframes/frame-packets/
