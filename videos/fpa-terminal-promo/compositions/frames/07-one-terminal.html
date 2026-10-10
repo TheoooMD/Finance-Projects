@@ -1,0 +1,311 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/Geist-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("assets/fonts/GeistMono-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Geist", sans-serif;
+      --f07-ink: #0f1115;
+      --f07-amber: #f5b83d;
+      --f07-cream: #eceae4;
+      --f07-muted: #9aa2ad;
+      --f07-hint: #6b7280;
+      --f07-line: #262b33;
+    }
+
+    /* full-bleed ground — a clip layer, never the root */
+    .f07-ground {
+      position: absolute;
+      inset: 0;
+      background: #0f1115;
+    }
+
+    .f07-layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ---------- chrome ---------- */
+    .f07-num {
+      position: absolute;
+      top: 5.5cqw;
+      right: 5.5cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 2.1cqw;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--f07-hint);
+      opacity: 0;
+    }
+
+    /* ---------- hero block ---------- */
+    .f07-hero {
+      position: absolute;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      top: 22cqw;
+    }
+    .f07-rule {
+      width: 9cqw;
+      height: 0.45cqw;
+      background: var(--f07-amber);
+      margin: 0 0 2.6cqw;
+      transform-origin: 0% 50%;
+    }
+    .f07-h1 {
+      font-size: 7cqw;
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      text-transform: lowercase;
+      color: var(--f07-cream);
+    }
+    .f07-h1 i {
+      display: inline-block;
+      font-style: normal;
+      opacity: 0;
+    }
+    .f07-am {
+      color: var(--f07-amber);
+    }
+
+    /* ---------- pillar row ---------- */
+    .f07-pillars {
+      position: absolute;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      top: 62cqw;
+      display: flex;
+      gap: 1.1cqw;
+      flex-wrap: wrap;
+    }
+    .f07-chip {
+      display: inline-block;
+      font-family: "Geist Mono", monospace;
+      font-size: 1.9cqw;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--f07-amber);
+      border: 1px solid var(--f07-amber);
+      padding: 0.8cqw 1.2cqw;
+      background: var(--f07-ink);
+      white-space: nowrap;
+      opacity: 0;
+    }
+
+    /* ---------- lockup ---------- */
+    .f07-lockup {
+      position: absolute;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      bottom: 18cqw;
+    }
+    .f07-hair {
+      height: 1px;
+      width: 100%;
+      background: var(--f07-line);
+      margin-bottom: 2.2cqw;
+      transform-origin: 0% 50%;
+    }
+    .f07-lockrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2cqw;
+    }
+    .f07-mark {
+      font-size: 3.4cqw;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--f07-cream);
+      opacity: 0;
+    }
+    .f07-by {
+      margin-top: 0.8cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 1.6cqw;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--f07-hint);
+      opacity: 0;
+    }
+    .f07-meta {
+      font-family: "Geist Mono", monospace;
+      font-size: 1.5cqw;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: right;
+      line-height: 1.8;
+      color: var(--f07-hint);
+      white-space: nowrap;
+    }
+    .f07-meta div {
+      opacity: 0;
+    }
+    .f07-meta .f07-am {
+      color: var(--f07-amber);
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="07-one-terminal"
+    data-start="0"
+    data-duration="9"
+    data-width="1080"
+    data-height="1080"
+  >
+    <div class="f07-ground clip" id="f07-ground" data-start="0" data-duration="9" data-track-index="0"></div>
+
+    <div class="f07-layer clip" id="f07-chrome-layer" data-start="0" data-duration="9" data-track-index="1">
+      <div class="f07-num" id="f07-num">07</div>
+    </div>
+
+    <div class="f07-layer clip" id="f07-hero-layer" data-start="0" data-duration="9" data-track-index="2">
+      <div class="f07-hero">
+        <div class="f07-rule" id="f07-rule"></div>
+        <div class="f07-h1" id="f07-h1">
+          <i>from</i> <i>raw</i> <i>statements</i><br />
+          <i>to</i> <i>a</i> <i class="f07-am">defensible</i><br />
+          <i>valuation.</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="f07-layer clip" id="f07-pillars-layer" data-start="0" data-duration="9" data-track-index="3">
+      <div class="f07-pillars" id="f07-pillars">
+        <span class="f07-chip">DATA</span>
+        <span class="f07-chip">ANALYZE</span>
+        <span class="f07-chip">PLAN</span>
+        <span class="f07-chip">DECIDE</span>
+        <span class="f07-chip">COMMUNICATE</span>
+      </div>
+    </div>
+
+    <div class="f07-layer clip" id="f07-lockup-layer" data-start="0" data-duration="9" data-track-index="4">
+      <div class="f07-lockup">
+        <div class="f07-hair" id="f07-hair"></div>
+        <div class="f07-lockrow">
+          <div>
+            <div class="f07-mark" id="f07-mark">FP&amp;A Terminal</div>
+            <div class="f07-by" id="f07-by">BUILT BY MINH-DUC TH&Eacute;O HO</div>
+          </div>
+          <div class="f07-meta">
+            <div id="f07-meta1">READS PITCHBOOK &middot; 10-K PDF &middot; CSV &middot; EXCEL</div>
+            <div id="f07-meta2" class="f07-am">EXPORTS LIVE-FORMULA EXCEL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---------- Scene 1 (0.0–1.4s) — the breath after frame 06 ----------
+         Flat ink-black ground. The amber rule stub wipes left-to-right on the
+         upper third; the mono numeral settles top-right. Nothing else. */
+      tl.fromTo(
+        "#f07-rule",
+        { scaleX: 0, opacity: 1 },
+        { scaleX: 1, duration: 0.7, ease: "power3.out" },
+        0.1
+      );
+      tl.fromTo(
+        "#f07-num",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "none" },
+        0.2
+      );
+
+      /* ---------- Scene 2 (1.4–3.8s) — the hero line, per word ----------
+         `defensible` carries the site's own amber emphasis; no other accent. */
+      const words = gsap.utils.toArray("#f07-h1 i");
+      words.forEach(function (w, i) {
+        tl.fromTo(
+          w,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" },
+          1.4 + i * 0.22
+        );
+      });
+
+      /* ---------- Scene 3 (3.8–5.8s) — the five pillars, ONE shared beat ----------
+         No stagger: they arrive as a system, not a list. Hard settle, then hold. */
+      tl.fromTo(
+        ".f07-chip",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.32, ease: "power4.out" },
+        3.9
+      );
+
+      /* ---------- Scene 4 (5.8–7.0s) — hairline wipe, then the lockup ---------- */
+      tl.fromTo(
+        "#f07-hair",
+        { scaleX: 0, opacity: 1 },
+        { scaleX: 1, duration: 0.55, ease: "power3.out" },
+        5.8
+      );
+      tl.fromTo(
+        "#f07-mark",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        6.05
+      );
+      tl.fromTo(
+        "#f07-by",
+        { opacity: 0, y: 6 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+        6.25
+      );
+      tl.fromTo(
+        "#f07-meta1",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.38, ease: "none" },
+        6.3
+      );
+      tl.fromTo(
+        "#f07-meta2",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.38, ease: "none" },
+        6.5
+      );
+
+      /* ---------- Scene 5 (7.0–9.0s) — COMPLETELY STILL ----------
+         Every tween above lands by 6.88s. Nothing animates, drifts, breathes or
+         loops after that: two full seconds of absolute stillness close the film.
+         The zero-delta tween below only carries the timeline out to 9s so the
+         stillness is part of the render, not a truncation. */
+      tl.to({ hold: 0 }, { hold: 0, duration: 2.0, ease: "none" }, 7.0);
+
+      window.__timelines["07-one-terminal"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

@@ -1,0 +1,303 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: Menlo, ui-monospace, monospace;
+      color: #ECEAE4;
+    }
+
+    /* ---- full-bleed ground (clip layer, never on #root) ---- */
+    .f03-ground {
+      position: absolute;
+      inset: 0;
+      background: #08090B;
+    }
+
+    /* ---- the real product screen, seated full-bleed ---- */
+    .f03-screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #08090B;
+      transform-origin: 50% 50%;
+    }
+    .f03-shot {
+      position: absolute;
+      left: -207.5px;
+      top: 221.5px;
+      width: 1954.6px;
+      height: auto;
+      display: block;
+    }
+
+    /* ---- rebuilt slot borders over their real on-screen locations ---- */
+    .f03-slot {
+      position: absolute;
+      box-sizing: border-box;
+    }
+    .f03-slot-mask {
+      position: absolute;
+      inset: 0;
+      box-sizing: border-box;
+      border: 3px solid #0D0E12;
+      border-radius: 13px;
+    }
+    .f03-slot-stroke {
+      position: absolute;
+      inset: 0;
+      box-sizing: border-box;
+      border: 1.1px solid #3DD9A0;
+      border-radius: 12px;
+      transform-origin: 50% 50%;
+    }
+    .f03-is  { left: 113.2px; top: 478.0px;  width: 277.4px; height: 113.5px; }
+    .f03-bs  { left: 401.3px; top: 478.0px;  width: 277.4px; height: 113.5px; }
+    .f03-cf  { left: 689.4px; top: 478.0px;  width: 277.4px; height: 113.5px; }
+    .f03-ops { left: 113.2px; top: 737.6px;  width: 853.6px; height: 112.5px; }
+
+    /* ---- the terminal's own console line, beneath the slots ---- */
+    .f03-console-mask {
+      position: absolute;
+      left: 96px;
+      top: 853px;
+      width: 887px;
+      height: 112px;
+      background: #0F1115;
+    }
+    .f03-console {
+      position: absolute;
+      left: 113.2px;
+      top: 855px;
+      width: 860px;
+      font-size: 17px;
+      line-height: 20px;
+      letter-spacing: 0.01em;
+      color: #F5B83D;
+      white-space: pre;
+    }
+    .f03-console .f03-dim { color: #6B7280; }
+    .f03-console span { display: inline; }
+    .f03-caret {
+      display: inline-block;
+      width: 9px;
+      color: #F5B83D;
+      transform-origin: 50% 50%;
+    }
+
+    /* ---- the four filename chips carried over from frame 02 ---- */
+    .f03-chips { position: absolute; inset: 0; }
+    .f03-chip {
+      position: absolute;
+      width: 360px;
+      height: 50px;
+      line-height: 48px;
+      padding: 0 15px;
+      box-sizing: border-box;
+      font-size: 19px;
+      letter-spacing: 0.02em;
+      color: #9AA2AD;
+      background: #0F1115;
+      border: 1px solid #262B33;
+      white-space: nowrap;
+      overflow: hidden;
+      transform-origin: 50% 50%;
+    }
+    .f03-chip.f03-chip-on { color: #F5B83D; border-color: #F5B83D; }
+    .f03-c1 { left: 165px; top: 351px; }
+    .f03-c2 { left: 555px; top: 351px; }
+    .f03-c3 { left: 165px; top: 419px; }
+    .f03-c4 { left: 555px; top: 419px; }
+
+    /* ---- frame chrome ---- */
+    .f03-chrome { position: absolute; inset: 0; }
+    .f03-kicker {
+      position: absolute;
+      left: 59.4px;
+      top: 59.4px;
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #F5B83D;
+    }
+    .f03-num {
+      position: absolute;
+      right: 59.4px;
+      top: 59.4px;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      color: #6B7280;
+    }
+    .f03-rule {
+      position: absolute;
+      left: 59.4px;
+      top: 92px;
+      width: 36px;
+      height: 2px;
+      background: #F5B83D;
+    }
+  </style>
+
+  <div id="root" data-composition-id="03-drop-them-in" data-width="1080" data-height="1080">
+    <div class="f03-ground clip" data-start="0" data-duration="9" data-track-index="0"></div>
+
+    <div class="f03-screen clip" id="f03-screen" data-start="0" data-duration="9" data-track-index="1">
+      <img class="f03-shot" src="assets/screen-load.png" alt="" />
+
+      <div class="f03-slot f03-is">
+        <div class="f03-slot-mask"></div>
+        <div class="f03-slot-stroke" id="f03-stroke-is"></div>
+      </div>
+      <div class="f03-slot f03-bs">
+        <div class="f03-slot-mask"></div>
+        <div class="f03-slot-stroke" id="f03-stroke-bs"></div>
+      </div>
+      <div class="f03-slot f03-cf">
+        <div class="f03-slot-mask"></div>
+        <div class="f03-slot-stroke" id="f03-stroke-cf"></div>
+      </div>
+      <div class="f03-slot f03-ops">
+        <div class="f03-slot-mask"></div>
+        <div class="f03-slot-stroke" id="f03-stroke-ops"></div>
+      </div>
+
+      <div class="f03-console-mask" id="f03-console-mask"></div>
+      <div class="f03-console">
+        <div id="f03-line1"></div>
+        <div id="f03-line2" class="f03-dim"></div>
+      </div>
+    </div>
+
+    <div class="f03-chips clip" data-start="0" data-duration="9" data-track-index="2">
+      <div class="f03-chip f03-c1" id="f03-chip1">halcyon_income_statement.csv</div>
+      <div class="f03-chip f03-c2" id="f03-chip2">halcyon_balance_sheet.csv</div>
+      <div class="f03-chip f03-c3 f03-chip-on" id="f03-chip3">halcyon_billing_ledger.csv</div>
+      <div class="f03-chip f03-c4" id="f03-chip4">halcyon_cash_flow.csv</div>
+    </div>
+
+    <div class="f03-chrome clip" data-start="0" data-duration="9" data-track-index="3">
+      <div class="f03-kicker">1 &middot; DATA</div>
+      <div class="f03-num">03</div>
+      <div class="f03-rule"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var AMBER = "#F5B83D";
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---------- Scene 1 (0.0-1.4s): the screen seats up behind the falling chips ---------- */
+      tl.fromTo(
+        "#f03-screen",
+        { scale: 0.96, opacity: 0.92 },
+        { scale: 1, opacity: 1, duration: 1.4, ease: "power2.out" },
+        0
+      );
+
+      /* ---------- Scene 1 + 2: the chips fall, then are absorbed one at a time ---------- */
+      /* handoff in: 2x2 cluster centred at y = 410 (38% of 1080), scale 1, opacity 1,
+         falling downward at ~340 px/s. The first 0.22s is that exact linear fall. */
+      var FALL = 74.8; /* 340 px/s * 0.22s */
+
+      var chips = [
+        { el: "#f03-chip1", dx: -93.1,  dy: 158.8, land: 1.60 }, /* -> IS  */
+        { el: "#f03-chip2", dx: -195.0, dy: 158.8, land: 2.30 }, /* -> BS  */
+        { el: "#f03-chip4", dx: 93.1,   dy: 90.8,  land: 3.05 }, /* -> CF  */
+        { el: "#f03-chip3", dx: 195.0,  dy: 349.9, land: 3.80 }  /* -> OPS */
+      ];
+
+      chips.forEach(function (c) {
+        tl.fromTo(c.el, { x: 0, y: 0 }, { y: FALL, duration: 0.22, ease: "none" }, 0);
+        tl.to(c.el, { x: c.dx, y: c.dy, duration: c.land - 0.22, ease: "power1.inOut" }, 0.22);
+        /* absorbed into the slot */
+        tl.fromTo(
+          c.el,
+          { scale: 1, opacity: 1 },
+          { scale: 0.88, opacity: 0, duration: 0.18, ease: "power2.in" },
+          c.land - 0.1
+        );
+      });
+
+      /* ---------- Scene 2 (1.4-4.4s): each slot border snaps amber on its own beat ---------- */
+      var strokes = [
+        { el: "#f03-stroke-is",  at: 1.60 },
+        { el: "#f03-stroke-bs",  at: 2.30 },
+        { el: "#f03-stroke-cf",  at: 3.05 },
+        { el: "#f03-stroke-ops", at: 3.80 }
+      ];
+
+      strokes.forEach(function (s) {
+        tl.fromTo(
+          s.el,
+          { borderColor: "#3DD9A0", borderWidth: 1.1 },
+          { borderColor: AMBER, borderWidth: 1.7, duration: 0.12, ease: "none" },
+          s.at
+        );
+        tl.fromTo(
+          s.el,
+          { scale: 1.015 },
+          { scale: 1, duration: 0.28, ease: "power2.out" },
+          s.at
+        );
+      });
+
+      /* ---------- Scene 3 (4.4-7.2s): the console line types on beneath the slots ---------- */
+      var L1 = "> Loaded: Halcyon Cloud Systems, FY2023–FY2025";
+      var L2 = "  plus 56.7K billing lines through Aug 2026";
+
+      function build(id, text) {
+        var host = document.getElementById(id);
+        var out = [];
+        for (var i = 0; i < text.length; i++) {
+          var s = document.createElement("span");
+          s.textContent = text.charAt(i);
+          host.appendChild(s);
+          out.push(s);
+        }
+        return out;
+      }
+
+      var caret = document.createElement("span");
+      caret.className = "f03-caret";
+      caret.textContent = "_";
+
+      var spans = build("f03-line1", L1).concat(build("f03-line2", L2));
+      document.getElementById("f03-line2").appendChild(caret);
+
+      tl.fromTo("#f03-console-mask", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, 4.40);
+
+      var TYPE_START = 4.5;
+      var TYPE_STEP = 0.0268;
+      spans.forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, TYPE_START + i * TYPE_STEP);
+      });
+
+      /* caret: present from the first typed character, blinking on a fixed grid ---------- */
+      tl.fromTo(caret, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, TYPE_START);
+      var t = TYPE_START + 0.42;
+      var k = 0;
+      while (t < 8.96) {
+        tl.to(caret, { opacity: k % 2 === 0 ? 0.08 : 1, duration: 0.001, ease: "none" }, t);
+        t += 0.42;
+        k++;
+      }
+
+      /* ---------- Scene 4 (7.2-9.0s): all four lit, console resolved, held.
+         Low-amplitude jitter on the caret only. ---------- */
+      var j = 7.2;
+      var jx = [0.6, -0.5, 0.4, -0.6, 0.5, -0.4, 0];
+      jx.forEach(function (v, i) {
+        tl.to(caret, { x: v, duration: 0.001, ease: "none" }, j + i * 0.26);
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["03-drop-them-in"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

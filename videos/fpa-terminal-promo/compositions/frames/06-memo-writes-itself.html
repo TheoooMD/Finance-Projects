@@ -1,0 +1,301 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/Geist-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("assets/fonts/GeistMono-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Geist", sans-serif;
+    }
+
+    /* ---- full-bleed ground (clip layer, never #root) ---- */
+    #f06-ground {
+      position: absolute;
+      inset: 0;
+      background: #0f1115;
+    }
+
+    /* ---- the memo surface: everything that scales + fades on the handoff out ---- */
+    #f06-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ---- chrome ---- */
+    .f06-kick {
+      position: absolute;
+      left: 5.5cqw;
+      top: 5.5cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 2.1cqw;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f5b83d;
+    }
+    .f06-num {
+      position: absolute;
+      top: 5.5cqw;
+      right: 5.5cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 2.1cqw;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: #6b7280;
+    }
+
+    /* ---- pillar rail (carried in from frame 05 at DECIDE, completes to COMMUNICATE) ---- */
+    .f06-rail {
+      position: absolute;
+      left: 5.5cqw;
+      top: 16cqw;
+      bottom: 9cqw;
+      width: 0.35cqw;
+      background: #262b33;
+    }
+    .f06-rail-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #f5b83d;
+    }
+
+    /* ---- title ---- */
+    .f06-title-wrap {
+      position: absolute;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      top: 14cqw;
+    }
+    .f06-title {
+      margin-left: 2.9cqw;
+      font-size: 4.2cqw;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: #eceae4;
+    }
+    .f06-w {
+      display: inline-block;
+    }
+
+    /* ---- findings ---- */
+    .f06-findings {
+      position: absolute;
+      left: 8.4cqw;
+      right: 5.5cqw;
+      top: 31.5cqw;
+    }
+    .f06-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.8cqw;
+      padding: 4.2cqw 0;
+      border-bottom: 1px solid #262b33;
+    }
+    .f06-sev {
+      font-family: "Geist Mono", monospace;
+      font-size: 1.7cqw;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      padding: 0.62cqw 0.95cqw;
+      flex: 0 0 auto;
+      white-space: nowrap;
+      margin-top: 0.42cqw;
+    }
+    .f06-sev-red {
+      color: #ff8a7a;
+      border: 1px solid #ff8a7a;
+    }
+    .f06-sev-watch {
+      color: #f5b83d;
+      border: 1px solid #f5b83d;
+    }
+    .f06-tx {
+      font-size: 2.3cqw;
+      font-weight: 400;
+      line-height: 1.45;
+      color: #eceae4;
+    }
+    .f06-fig {
+      font-weight: 600;
+      color: #f5b83d;
+    }
+
+    /* ---- closing mono line (thin chrome, allowed below the 83% band) ---- */
+    .f06-close {
+      position: absolute;
+      left: 8.4cqw;
+      right: 5.5cqw;
+      bottom: 5.5cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 2.1cqw;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #f5b83d;
+      white-space: nowrap;
+    }
+    #f06-close-clip {
+      display: inline-block;
+      clip-path: inset(0 100% 0 0);
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="06-memo-writes-itself"
+    data-start="0"
+    data-duration="12"
+    data-width="1080"
+    data-height="1080"
+  >
+    <div id="f06-ground" class="clip" data-start="0" data-duration="12" data-track-index="0"></div>
+
+    <div id="f06-stage" class="clip" data-start="0" data-duration="12" data-track-index="1">
+      <div class="f06-kick" id="f06-kick">5 · COMMUNICATE</div>
+      <div class="f06-num" id="f06-num">06</div>
+
+      <div class="f06-rail"><i class="f06-rail-fill" id="f06-rail-fill"></i></div>
+
+      <div class="f06-title-wrap">
+        <div class="f06-title">
+          <span class="f06-w">sr</span> <span class="f06-w">fp&amp;a</span>
+          <span class="f06-w">memo</span><br />
+          <span class="f06-w">to</span> <span class="f06-w">the</span>
+          <span class="f06-w">cfo.</span>
+        </div>
+      </div>
+
+      <div class="f06-findings">
+        <div class="f06-row" id="f06-row-1">
+          <span class="f06-sev f06-sev-red">RED FLAG</span>
+          <span class="f06-tx"
+            >DSO rose 8 days to 58 — about <b class="f06-fig">$6.8M</b> of cash tied up</span
+          >
+        </div>
+        <div class="f06-row" id="f06-row-2">
+          <span class="f06-sev f06-sev-red">RED FLAG</span>
+          <span class="f06-tx"
+            >Mix shift to Professional services cut gross margin
+            <b class="f06-fig">2.7 pts</b></span
+          >
+        </div>
+        <div class="f06-row" id="f06-row-3">
+          <span class="f06-sev f06-sev-red">RED FLAG</span>
+          <span class="f06-tx"
+            >Monte Carlo: <b class="f06-fig">34.6%</b> chance of a covenant breach</span
+          >
+        </div>
+        <div class="f06-row" id="f06-row-4">
+          <span class="f06-sev f06-sev-watch">WATCH</span>
+          <span class="f06-tx"
+            >EMEA <b class="f06-fig">$7.2M</b> below budget — volume, not price</span
+          >
+        </div>
+      </div>
+
+      <div class="f06-close">
+        <span id="f06-close-clip">A BOARD-READY READ · DRIVERS · CASH · RISKS</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      /* ================= Scene 1 (0.0–1.8s) — the memo surface seats ================= */
+
+      // chrome: kicker + catalogue numeral
+      tl.fromTo("#f06-kick", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+      tl.fromTo("#f06-num", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.12);
+
+      // rail completes: carried in at DECIDE (0.8) and finishes to COMMUNICATE (1.0)
+      tl.fromTo(
+        "#f06-rail-fill",
+        { scaleY: 0.8, transformOrigin: "top center" },
+        { scaleY: 1, transformOrigin: "top center", duration: 0.7, ease: "power3.inOut" },
+        0.15
+      );
+
+      // title reveals per word (hero readable well before 0.5s)
+      tl.fromTo(
+        ".f06-title .f06-w",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.42, ease: "power3.out", stagger: 0.1 },
+        0.2
+      );
+
+      /* ============ Scenes 2–5 — findings arrive one at a time, hard settle ============ */
+      // Each row slides in from the left; the previous row steps back to 70% so the
+      // newest finding always reads hardest. Hold windows are reading-time paced.
+      var rows = [
+        { id: "#f06-row-1", at: 1.8, rest: 0.7 },
+        { id: "#f06-row-2", at: 4.0, rest: 0.7 },
+        { id: "#f06-row-3", at: 6.0, rest: 0.7 },
+        { id: "#f06-row-4", at: 8.6, rest: 0.55 } // WATCH — deliberately quieter
+      ];
+
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var landed = i === 3 ? 0.55 : 1;
+
+        tl.fromTo(
+          r.id,
+          { opacity: 0, x: -34 },
+          { opacity: landed, x: 0, duration: 0.52, ease: "power4.out" },
+          r.at
+        );
+
+        // the row that just lost focus steps back as the new one lands
+        if (i > 0) {
+          tl.to(rows[i - 1].id, { opacity: rows[i - 1].rest, duration: 0.4, ease: "power2.out" }, r.at);
+        }
+      }
+
+      /* ============ Scene 6 (10.4–12.0s) — closing mono line, then the handoff ============ */
+      // The bottom chrome line types on as a hard left-to-right step wipe (42 steps,
+      // one per character) while all four findings hold.
+      tl.fromTo(
+        "#f06-close-clip",
+        { clipPath: "inset(0 100% 0 0)" },
+        { clipPath: "inset(0 0% 0 0)", duration: 0.95, ease: "steps(42)" },
+        10.4
+      );
+
+      // HANDOFF OUT — the whole memo surface scales 1.0 → 1.04 and fades to 0 over the
+      // final 0.4s; the ink-black ground stays and returns to flat canvas for frame 07.
+      tl.fromTo(
+        "#f06-stage",
+        { scale: 1, opacity: 1, transformOrigin: "50% 50%" },
+        { scale: 1.04, opacity: 0, transformOrigin: "50% 50%", duration: 0.4, ease: "power2.in" },
+        11.6
+      );
+
+      window.__timelines["06-memo-writes-itself"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

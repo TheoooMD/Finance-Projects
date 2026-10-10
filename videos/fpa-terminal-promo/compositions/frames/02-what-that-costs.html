@@ -1,0 +1,307 @@
+<template>
+  <style>
+    /* ── frame 02 · what that normally costs ──────────────────────────────
+       Broadside dark register. Square 1080×1080. Type authored in cqw
+       against #root (container law). fire-orange is the only accent.
+       Fonts: IBM Plex Mono (chrome, per frame.md) + Inter as the shipped
+       stand-in for Geist — no Geist file exists in assets/fonts, and only
+       bundled/aliased families may be named. Both are canonical bundled
+       families, so no @font-face file reference is required.
+    ------------------------------------------------------------------- */
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1080px;
+      height: 1080px;
+      container-type: size;
+      overflow: hidden;
+      color: #eceae4;
+    }
+
+    .clip {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* full-bleed ground — a clip layer, never a background on #root */
+    #f02-ground {
+      background: #0f1115;
+    }
+
+    /* ── chrome ──────────────────────────────────────────────────────── */
+    .f02-mono {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    #f02-kicker {
+      position: absolute;
+      left: 5.5cqw;
+      top: 5.5cqw;
+      font-size: 2.1cqw;
+      line-height: 1.2;
+      color: #6b7280;
+    }
+    #f02-num {
+      position: absolute;
+      right: 5.5cqw;
+      top: 5.5cqw;
+      font-size: 2.1cqw;
+      line-height: 1.2;
+      letter-spacing: 0.12em;
+      color: #6b7280;
+    }
+
+    /* ── tier 1 · the settled filename cluster ───────────────────────────
+       2×2, left-anchored and deliberately ragged-right (asymmetric).
+       Geometry is the frame-03 handoff: rows are 4.07cqw tall + 1.4cqw
+       gap = 9.54cqw, so top 33.23cqw puts the cluster centre at exactly
+       y = 38cqw = 38% of this square canvas. DO NOT RETUNE.
+    ------------------------------------------------------------------- */
+    #f02-chips {
+      position: absolute;
+      left: 5.5cqw;
+      top: 33.23cqw;
+      width: 89cqw;
+    }
+    .f02-chiprow {
+      display: flex;
+      gap: 1.4cqw;
+    }
+    .f02-chiprow + .f02-chiprow {
+      margin-top: 1.4cqw;
+    }
+    .f02-chip {
+      display: inline-block;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 400;
+      font-size: 1.9cqw;
+      line-height: 1.2;
+      letter-spacing: 0.06em;
+      color: #9aa2ad;
+      background: #0f1115;
+      border: 1px solid #262b33;
+      padding: 0.8cqw 1.2cqw;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+    .f02-chip.f02-on {
+      color: #f5b83d;
+      border-color: #f5b83d;
+    }
+    #f02-rows {
+      color: #f5b83d;
+    }
+
+    /* ── the hairline that divides the two tiers ─────────────────────── */
+    #f02-hair {
+      position: absolute;
+      left: 5.5cqw;
+      top: 48cqw;
+      width: 89cqw;
+      height: 1px;
+      background: #262b33;
+      transform-origin: 0% 50%;
+      will-change: transform;
+    }
+
+    /* ── tier 2 · the cascade that outruns the reader ────────────────── */
+    #f02-cascade {
+      position: absolute;
+      left: 5.5cqw;
+      top: 50.8cqw;
+      width: 89cqw;
+      font-family: "Inter", system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 4.4cqw;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: #eceae4;
+    }
+    .f02-cas {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+    .f02-sl {
+      color: #6b7280;
+      font-weight: 500;
+      padding: 0 0.15em 0 0;
+    }
+
+    /* ── bottom chrome · thin mono only, below the keep-out line ─────── */
+    #f02-coda {
+      position: absolute;
+      left: 5.5cqw;
+      bottom: 5.5cqw;
+      font-size: 2.1cqw;
+      line-height: 1.2;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    #f02-coda-cursor {
+      display: inline-block;
+      width: 1.1cqw;
+      color: #f5b83d;
+    }
+  </style>
+
+  <div id="root" data-composition-id="02-what-that-costs" data-width="1080" data-height="1080">
+    <!-- scene 1 (0.0–1.6s) · ground + chrome only; the emptiness is the beat -->
+    <div id="f02-ground" class="clip" data-start="0" data-duration="10" data-track-index="0"></div>
+
+    <div id="f02-chrome-layer" class="clip" data-start="0" data-duration="10" data-track-index="1">
+      <div id="f02-kicker" class="f02-mono">WHAT THAT NORMALLY COSTS</div>
+      <div id="f02-num" class="f02-mono">02</div>
+    </div>
+
+    <!-- scene 2 (1.6–4.2s) · the four real DATA-tab filenames settle in -->
+    <div id="f02-chip-layer" class="clip" data-start="1.6" data-duration="8.4" data-track-index="2">
+      <div id="f02-chips">
+        <div class="f02-chiprow">
+          <span class="f02-chip">halcyon_income_statement.csv</span>
+          <span class="f02-chip">halcyon_balance_sheet.csv</span>
+        </div>
+        <div class="f02-chiprow">
+          <span class="f02-chip">halcyon_cash_flow.csv</span>
+          <span class="f02-chip f02-on"
+            >halcyon_billing_ledger.csv<span id="f02-rows"> · 56.7K lines</span></span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- scene 3 (4.2–7.8s) · hairline wipe, then the accelerating fadelist -->
+    <div id="f02-hair-layer" class="clip" data-start="4.2" data-duration="5.8" data-track-index="3">
+      <div id="f02-hair"></div>
+    </div>
+
+    <div id="f02-cascade-layer" class="clip" data-start="4.3" data-duration="5.7" data-track-index="4">
+      <div id="f02-cascade">
+        <span class="f02-cas">retype</span>
+        <span class="f02-cas"><span class="f02-sl">/</span>re-link</span>
+        <span class="f02-cas"><span class="f02-sl">/</span>tie out</span>
+        <span class="f02-cas"><span class="f02-sl">/</span>bridge the variance</span>
+        <span class="f02-cas"><span class="f02-sl">/</span>rebuild the scenarios</span>
+        <span class="f02-cas"><span class="f02-sl">/</span>re-run the covenants</span>
+        <span class="f02-cas"><span class="f02-sl">/</span>re-cut the deck</span>
+      </div>
+    </div>
+
+    <!-- scene 4 (7.8–10.0s) · the cascade halts; the coda types on -->
+    <div id="f02-coda-layer" class="clip" data-start="7.8" data-duration="2.2" data-track-index="5">
+      <div id="f02-coda" class="f02-mono">
+        <span id="f02-coda-text"></span><span id="f02-coda-cursor">_</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      /* ── scene 1 (0.0–1.6s) ──────────────────────────────────────────
+         Chrome only. Hero-visible well before t=0.5s; nothing else
+         arrives until 1.7s so the empty field reads against frame 01. */
+      tl.fromTo("#f02-kicker", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 0.04);
+      tl.fromTo("#f02-num", { opacity: 0 }, { opacity: 1, duration: 0.34, ease: "power2.out" }, 0.16);
+
+      /* ── scene 2 (1.6–4.2s) · grid-card-assemble, tier 1 ─────────────
+         Staggered cascade straight into each slot (center-outward-expansion
+         in its short-path / direct-into-slot form — no burst, no scatter),
+         each landing on a hard precise settle. The ledger chip lands last
+         because it is the one carrying a row count. */
+      var chips = document.querySelectorAll("#f02-chips .f02-chip");
+      var chipAt = [1.7, 2.22, 2.74, 3.34];
+      for (var i = 0; i < chips.length; i++) {
+        tl.fromTo(
+          chips[i],
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.55, ease: "power4.out" },
+          chipAt[i]
+        );
+      }
+      /* the row count is its own micro-beat on the accent chip; width was
+         already reserved, so nothing reflows and the landed geometry holds */
+      tl.fromTo("#f02-rows", { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "power2.out" }, 3.95);
+
+      /* ── scene 3 (4.2–7.8s) · the hairline, then tier 2 ──────────────
+         Hairline wipes left→right (scaleX, never width), then the work the
+         files imply cascades beneath it with the stagger ACCELERATING and
+         opacity stepping 1.0 → 0.16 down the stack. By the last two items
+         the arrivals are faster than the line can be read — the overflow
+         is the argument; the list never resolves. */
+      tl.fromTo("#f02-hair", { scaleX: 0 }, { scaleX: 1, duration: 0.62, ease: "power3.inOut" }, 4.22);
+
+      var cas = document.querySelectorAll("#f02-cascade .f02-cas");
+      var casAt = [4.45, 5.25, 5.93, 6.49, 6.93, 7.25, 7.45];
+      var casDur = [0.42, 0.4, 0.36, 0.32, 0.26, 0.22, 0.18];
+      var casOp = [1, 0.92, 0.78, 0.62, 0.44, 0.28, 0.16];
+      var casY = [12, 11, 10, 8, 7, 6, 5];
+      for (var j = 0; j < cas.length; j++) {
+        tl.fromTo(
+          cas[j],
+          { opacity: 0, y: casY[j] },
+          { opacity: casOp[j], y: 0, duration: casDur[j], ease: "power2.out" },
+          casAt[j]
+        );
+      }
+
+      /* ── scene 4 (7.8–10.0s) · halt + coda ───────────────────────────
+         The cascade stops mid-stack and sinks a step as a group, while the
+         four chips LIT UP in place — same x/y, scale 1, opacity 1 — so the
+         cluster is the only resolved thing left on screen. This is the
+         frame-03 handoff: the chips do not move or fade after 8.6s. */
+      tl.fromTo("#f02-cascade", { opacity: 1 }, { opacity: 0.72, duration: 0.7, ease: "power2.inOut" }, 7.9);
+      tl.fromTo(
+        "#f02-chips .f02-chip:not(.f02-on)",
+        { color: "#9aa2ad", borderColor: "#262b33" },
+        { color: "#eceae4", borderColor: "#3a4150", duration: 0.7, ease: "power2.inOut" },
+        7.9
+      );
+
+      /* coda · discrete-text-sequence — whole-state replacement at time
+         thresholds (keystroke clusters, with pauses at the word breaks).
+         Each state is stamped by a zero-duration tl.set at its own time, so
+         the schedule is pure timeline data: no callbacks, no onUpdate, and
+         every frame the renderer seeks to resolves to exactly one state. */
+      var codaText = document.getElementById("f02-coda-text");
+      var codaCursor = document.getElementById("f02-coda-cursor");
+      var SEQ = [
+        [7.9, ""],
+        [8.02, "\u2026"],
+        [8.12, "\u2026AN"],
+        [8.22, "\u2026AND"],
+        [8.44, "\u2026AND A"],
+        [8.54, "\u2026AND AGA"],
+        [8.64, "\u2026AND AGAIN"],
+        [8.88, "\u2026AND AGAIN N"],
+        [8.98, "\u2026AND AGAIN NEX"],
+        [9.08, "\u2026AND AGAIN NEXT"],
+        [9.3, "\u2026AND AGAIN NEXT MO"],
+        [9.4, "\u2026AND AGAIN NEXT MONTH"]
+      ];
+      for (var m = 0; m < SEQ.length; m++) {
+        tl.set(codaText, { textContent: SEQ[m][1] }, SEQ[m][0]);
+      }
+
+      /* block cursor — a stamped 2Hz square wave, never a CSS animation */
+      var BLINK = [
+        [7.9, 1], [8.15, 0.08], [8.4, 1], [8.65, 0.08], [8.9, 1],
+        [9.15, 0.08], [9.4, 1], [9.65, 0.08], [9.9, 1]
+      ];
+      for (var n = 0; n < BLINK.length; n++) {
+        tl.set(codaCursor, { opacity: BLINK[n][1] }, BLINK[n][0]);
+      }
+
+      /* hold the timeline open to the frame's full 10s so the landed
+         handoff state is what the last rendered frame shows */
+      tl.to({ pad: 0 }, { pad: 1, duration: 0.1, ease: "none" }, 9.9);
+
+      window.__timelines["02-what-that-costs"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

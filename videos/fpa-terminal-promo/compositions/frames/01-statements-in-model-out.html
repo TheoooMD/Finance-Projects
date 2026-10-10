@@ -1,0 +1,242 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/Geist-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("assets/fonts/GeistMono-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Geist", sans-serif;
+      --f01-ink: #0f1115;
+      --f01-amber: #f5b83d;
+      --f01-cream: #eceae4;
+      --f01-hint: #6b7280;
+    }
+
+    /* full-bleed ground — a clip layer, never the root */
+    .f01-ground {
+      position: absolute;
+      inset: 0;
+      background: #0f1115;
+    }
+
+    .f01-layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ---------- chrome ---------- */
+    .f01-kick {
+      position: absolute;
+      left: 5.5cqw;
+      top: 5.5cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 2.1cqw;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--f01-amber);
+      white-space: nowrap;
+    }
+    .f01-caret {
+      display: inline-block;
+      width: 0.7cqw;
+      color: var(--f01-amber);
+    }
+    .f01-num {
+      position: absolute;
+      top: 5.5cqw;
+      right: 5.5cqw;
+      font-family: "Geist Mono", monospace;
+      font-size: 2.1cqw;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--f01-hint);
+      opacity: 0;
+    }
+
+    /* ---------- the argument stack ---------- */
+    .f01-stack {
+      position: absolute;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      top: 30cqw;
+    }
+    .f01-disp {
+      font-size: 11.5cqw;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+      color: var(--f01-cream);
+    }
+    .f01-beat1 {
+      font-size: 9.6cqw;
+      opacity: 0;
+    }
+    .f01-beat2 {
+      margin-top: 1.5cqw;
+    }
+    .f01-beat2 span {
+      display: block;
+      opacity: 0;
+    }
+    .f01-rule {
+      width: 9cqw;
+      height: 0.45cqw;
+      background: var(--f01-amber);
+      margin: 4.5cqw 0 2.2cqw;
+      transform-origin: 0% 50%;
+    }
+    .f01-payoff {
+      font-size: 5.6cqw;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: var(--f01-amber);
+    }
+    .f01-payoff i {
+      font-style: normal;
+      display: inline-block;
+      opacity: 0;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="01-statements-in-model-out"
+    data-start="0"
+    data-duration="8"
+    data-width="1080"
+    data-height="1080"
+  >
+    <div id="f01-ground" class="f01-ground clip" data-start="0" data-duration="8" data-track-index="0"></div>
+
+    <div id="f01-chrome-layer" class="f01-layer clip" data-start="0" data-duration="8" data-track-index="1">
+      <div class="f01-kick"><span id="f01-kick-text"></span><span class="f01-caret" id="f01-caret">_</span></div>
+      <div class="f01-num" id="f01-num">01</div>
+    </div>
+
+    <div id="f01-stack-layer" class="f01-layer clip" data-start="0" data-duration="8" data-track-index="2">
+      <div class="f01-stack">
+        <div class="f01-disp f01-beat1" id="f01-beat1">three statements in.</div>
+        <div class="f01-disp f01-beat2">
+          <span id="f01-beat2a">one integrated</span>
+          <span id="f01-beat2b">model out.</span>
+        </div>
+        <div class="f01-rule" id="f01-rule"></div>
+        <div class="f01-payoff">
+          <i>the</i> <i>whole</i> <i>fp&amp;a</i> <i>loop.</i><br />
+          <i>one</i> <i>terminal.</i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const CUT = 0.001; // a hard cut: instant state change, no easing softness
+
+      /* ---------- Scene 1 (0.0–2.4s) — chrome, then beat one alone ---------- */
+
+      // catalogue numeral hard-cuts in
+      tl.fromTo("#f01-num", { opacity: 0 }, { opacity: 1, duration: CUT, ease: "none" }, 0.1);
+
+      // mono kicker types on (discrete-text-sequence, smooth slice) with a blinking caret
+      const KICK = "ANALYZE · MODEL · VALUE · COMMUNICATE";
+      const kickEl = document.getElementById("f01-kick-text");
+      const caretEl = document.getElementById("f01-caret");
+      const slice = { v: 0 };
+      tl.fromTo(
+        slice,
+        { v: 0 },
+        {
+          v: KICK.length,
+          duration: 0.86,
+          ease: "none",
+          onUpdate: () => {
+            kickEl.textContent = KICK.substring(0, Math.floor(slice.v));
+          },
+        },
+        0.18
+      );
+      // deterministic square-wave blink, no CSS animation — caret cuts out as beat two arrives
+      const blink = { p: 0 };
+      tl.fromTo(
+        blink,
+        { p: 0 },
+        {
+          p: Math.PI * 2 * 4,
+          duration: 2.3,
+          ease: "none",
+          onUpdate: () => {
+            caretEl.style.opacity = Math.sin(blink.p) > 0 ? "1" : "0";
+          },
+        },
+        0
+      );
+      tl.fromTo("#f01-caret", { opacity: 1 }, { opacity: 0, duration: CUT, ease: "none" }, 2.3);
+
+      // beat one — hard-cut in at display scale (hero visible well before 0.5s)
+      tl.fromTo("#f01-beat1", { opacity: 0 }, { opacity: 1, duration: CUT, ease: "none" }, 0.3);
+
+      /* ---------- Scene 2 (2.4–4.6s) — the swap IS the beat ---------- */
+
+      // beat one drops to 30% in place: no move, no fade-out
+      tl.fromTo(
+        "#f01-beat1",
+        { opacity: 1 },
+        { opacity: 0.3, duration: CUT, ease: "none", immediateRender: false },
+        2.4
+      );
+      // beat two hard-cuts in beneath it, line by line
+      tl.fromTo("#f01-beat2a", { opacity: 0 }, { opacity: 1, duration: CUT, ease: "none" }, 2.42);
+      tl.fromTo("#f01-beat2b", { opacity: 0 }, { opacity: 1, duration: CUT, ease: "none" }, 3.3);
+
+      /* ---------- Scene 3 (4.6–6.6s) — amber rule wipes, payoff reveals per word ---------- */
+
+      tl.fromTo(
+        "#f01-rule",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.42, ease: "power2.out" },
+        4.6
+      );
+
+      const words = gsap.utils.toArray(".f01-payoff i");
+      words.forEach((w, i) => {
+        tl.fromTo(
+          w,
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" },
+          4.98 + i * 0.22
+        );
+      });
+
+      /* ---------- Scene 4 (6.6–8.0s) — fully resolved, held still ---------- */
+      // no camera, no drift, no exit: the held read sets the film's baseline rhythm
+
+      window.__timelines["01-statements-in-model-out"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>
