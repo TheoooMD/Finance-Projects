@@ -1,0 +1,544 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/Geist-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("assets/fonts/GeistMono-latin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: block;
+    }
+
+    #root {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Geist", sans-serif;
+      color: #ECEAE4;
+      container-type: size;
+    }
+    #root * { box-sizing: border-box; }
+
+    /* ---------- full-bleed ground (clip layer, never on #root) ---------- */
+    #root .f5-bg {
+      position: absolute;
+      inset: 0;
+      background: #0F1115;
+    }
+
+    /* ---------- fixed screen-space chrome ---------- */
+    #root .f5-chrome { position: absolute; inset: 0; }
+
+    #root .f5-kicker {
+      position: absolute;
+      left: 59px;
+      top: 59px;
+      width: 420px;
+      height: 26px;
+      font-family: "Geist Mono", monospace;
+      font-size: 22px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #F5B83D;
+    }
+    #root .f5-kicker span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+    }
+    #root .f5-num {
+      position: absolute;
+      right: 59px;
+      top: 59px;
+      font-family: "Geist Mono", monospace;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: #6B7280;
+    }
+
+    #root .f5-rail {
+      position: absolute;
+      left: 59px;
+      top: 173px;
+      height: 810px;
+      width: 4px;
+      background: #262B33;
+    }
+    #root .f5-railfill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 40%;
+      background: #F5B83D;
+    }
+    #root .f5-railnames {
+      position: absolute;
+      left: 91px;
+      top: 173px;
+      height: 810px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: "Geist Mono", monospace;
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      color: #6B7280;
+    }
+
+    #root .f5-footline {
+      position: absolute;
+      left: 59px;
+      right: 59px;
+      bottom: 59px;
+      height: 20px;
+      font-family: "Geist Mono", monospace;
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #6B7280;
+      white-space: nowrap;
+    }
+
+    /* ---------- camera window + world ---------- */
+    #root .f5-window {
+      position: absolute;
+      left: 216px;
+      top: 150px;
+      width: 804px;
+      height: 700px;
+      overflow: hidden;
+    }
+    #root .f5-world {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 804px;
+      height: 1771px;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+
+    #root .f5-station { position: absolute; left: 0; width: 804px; }
+    #root .f5-cap {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #6B7280;
+      white-space: nowrap;
+    }
+    #root .f5-cap b { color: #ECEAE4; font-weight: 500; }
+
+    #root .f5-read {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      font-family: "Geist Mono", monospace;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      color: #6B7280;
+    }
+    #root .f5-read i { font-style: normal; color: #F5B83D; margin-left: 8px; }
+
+    #root .f5-panel {
+      position: relative;
+      width: 804px;
+      overflow: hidden;
+      background: #08090B;
+    }
+    #root .f5-panel img {
+      position: absolute;
+      display: block;
+      max-width: none;
+    }
+    #root .f5-ov { position: absolute; }
+
+    /* --- station 1 live overlay: scenario toggle --- */
+    #root .f5-toggle {
+      left: 19.8px;
+      top: 19.8px;
+      width: 253.2px;
+      height: 46.4px;
+      border: 1.6px solid #F5B83D;
+      border-radius: 7px;
+      background: #08090B;
+      padding: 6.8px;
+    }
+    #root .f5-pill {
+      position: absolute;
+      top: 6.8px;
+      left: 6.8px;
+      width: 96.1px;
+      height: 32.8px;
+      background: #F5B83D;
+      border-radius: 4px;
+    }
+    #root .f5-seg {
+      position: absolute;
+      top: 6.8px;
+      height: 32.8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Geist", sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #A3A199;
+    }
+    #root #f5-seg-pes { left: 6.8px; width: 96.1px; }
+    #root #f5-seg-base { left: 102.9px; width: 54.8px; }
+    #root #f5-seg-opt { left: 157.7px; width: 88.6px; }
+
+    /* --- station 1 live overlay: export button --- */
+    #root .f5-export {
+      left: 281.9px;
+      top: 28.2px;
+      width: 159.7px;
+      height: 33.9px;
+      background: #F5B83D;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    #root .f5-export em {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Geist", sans-serif;
+      font-style: normal;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #120E04;
+    }
+    #root .f5-sweep {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 70px;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.72) 50%, rgba(255,255,255,0) 100%);
+    }
+    #root .f5-ring {
+      left: 277.9px;
+      top: 24.2px;
+      width: 167.7px;
+      height: 41.9px;
+      border: 1.5px solid #F5B83D;
+      border-radius: 8px;
+      opacity: 0;
+    }
+
+    /* --- station 1 live overlay: forecast figures --- */
+    #root .f5-rowcov {
+      left: 360px;
+      width: 444px;
+      background: #0F1115;
+    }
+    #root #f5-row-rev { top: 197.5px; height: 34.3px; border-bottom: 1px solid #2F3133; }
+    #root #f5-row-yoy { top: 232.8px; height: 35.2px; border-bottom: 1px solid #202125; }
+    #root .f5-cell {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-family: "Geist Mono", monospace;
+      font-size: 12.7px;
+      white-space: nowrap;
+    }
+    #root .f5-cell.c1 { left: 0px; width: 196px; }
+    #root .f5-cell.c2 { left: 196px; width: 206.2px; }
+    #root #f5-row-rev .f5-cell { color: #FFFFFF; font-weight: 700; }
+    #root #f5-row-yoy .f5-cell { color: #ECEAE4; font-weight: 400; }
+
+    /* --- station 1: column covers (reveal left to right) --- */
+    #root .f5-colcov { top: 159.3px; height: 118px; background: #0F1115; }
+
+    /* --- station 2 / 3 masks --- */
+    #root .f5-mask { background: #0F1115; }
+    #root .f5-mask.card { background: #0B0C0F; }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="05-plan-stress-decide"
+    data-start="0"
+    data-duration="13"
+    data-width="1080"
+    data-height="1080"
+  >
+    <div class="clip f5-bg" data-start="0" data-duration="13" data-track-index="0"></div>
+
+    <div class="clip f5-chrome" data-start="0" data-duration="13" data-track-index="1">
+      <div class="f5-kicker">
+        <span id="f5-kick-plan">3 &middot; Plan</span>
+        <span id="f5-kick-decide" style="opacity:0">4 &middot; Decide</span>
+      </div>
+      <div class="f5-num">05</div>
+      <div class="f5-rail"><div class="f5-railfill" id="f5-railfill"></div></div>
+      <div class="f5-railnames">
+        <span id="f5-p-data" style="color:#F5B83D;opacity:0.5">DATA</span>
+        <span id="f5-p-analyze" style="color:#F5B83D;opacity:0.5">ANALYZE</span>
+        <span id="f5-p-plan">PLAN</span>
+        <span id="f5-p-decide">DECIDE</span>
+        <span id="f5-p-comms">COMMS</span>
+      </div>
+      <div class="f5-footline" id="f5-footline"></div>
+    </div>
+
+    <div class="clip f5-window" data-start="0" data-duration="13" data-track-index="2">
+      <div class="f5-world" id="f5-world">
+
+        <!-- station 1 — integrated three-statement forecast -->
+        <div class="f5-station" id="f5-st1" style="top:0px;height:313px">
+          <div class="f5-cap" id="f5-cap1">Integrated 3-statement model &nbsp;&middot;&nbsp; <b>FY2026E &rarr; FY2030E</b></div>
+          <div class="f5-panel" id="f5-panel1" style="height:277px">
+            <img src="assets/screen-model.png" alt="" style="width:2004.8px;left:-302.8px;top:-156.6px" />
+
+            <div class="f5-ov f5-toggle">
+              <div class="f5-pill" id="f5-pill"></div>
+              <div class="f5-seg" id="f5-seg-pes">Pessimistic</div>
+              <div class="f5-seg" id="f5-seg-base" style="color:#120E04">Base</div>
+              <div class="f5-seg" id="f5-seg-opt">Optimistic</div>
+            </div>
+
+            <div class="f5-ov f5-export" id="f5-export">
+              <em>Export model (.xlsx)</em>
+              <div class="f5-sweep" id="f5-sweep" style="opacity:0"></div>
+            </div>
+            <div class="f5-ov f5-ring" id="f5-ring"></div>
+
+            <div class="f5-ov f5-rowcov" id="f5-row-rev">
+              <div class="f5-cell c1" id="f5-rev-1">$343.3M</div>
+              <div class="f5-cell c2" id="f5-rev-2">$374.8M</div>
+            </div>
+            <div class="f5-ov f5-rowcov" id="f5-row-yoy">
+              <div class="f5-cell c1" id="f5-yoy-1">10.8%</div>
+              <div class="f5-cell c2" id="f5-yoy-2">9.2%</div>
+            </div>
+
+            <div class="f5-ov f5-colcov" id="f5-col-a" style="left:156.6px;width:54.8px"></div>
+            <div class="f5-ov f5-colcov" id="f5-col-b" style="left:211.4px;width:69px"></div>
+            <div class="f5-ov f5-colcov" id="f5-col-c" style="left:280.4px;width:76.2px"></div>
+            <div class="f5-ov f5-colcov" id="f5-col-d" style="left:361.3px;width:202.5px"></div>
+            <div class="f5-ov f5-colcov" id="f5-col-e" style="left:563.8px;width:240.2px"></div>
+          </div>
+        </div>
+
+        <!-- station 2 — Monte Carlo, 5,000 iterations -->
+        <div class="f5-station" id="f5-st2" style="top:483px;height:482px">
+          <div class="f5-cap" id="f5-cap2">Monte Carlo &nbsp;&middot;&nbsp; <b>5,000 iterations</b> &nbsp;&middot;&nbsp; seed 42</div>
+          <div class="f5-read" id="f5-read2">
+            <span id="f5-mk-p10">P10<i>$47.4M</i></span>
+            <span id="f5-mk-p50">P50<i>$59.1M</i></span>
+            <span id="f5-mk-p90">P90<i>$70.3M</i></span>
+            <span id="f5-mk-note" style="font-size:12px">EBITDA &middot; FY2026E</span>
+          </div>
+          <div class="f5-panel" id="f5-panel2" style="height:416px">
+            <img src="assets/screen-montecarlo.png" alt="" style="width:1153.3px;left:-175.7px;top:-166.7px" />
+            <div class="f5-ov f5-mask" id="f5-d1l" style="left:3.3px;top:262.8px;width:197px;height:149.6px"></div>
+            <div class="f5-ov f5-mask" id="f5-d1r" style="left:200.3px;top:262.8px;width:197px;height:149.6px"></div>
+            <div class="f5-ov f5-mask" id="f5-d2l" style="left:406.4px;top:262.8px;width:197px;height:149.6px"></div>
+            <div class="f5-ov f5-mask" id="f5-d2r" style="left:603.4px;top:262.8px;width:197px;height:149.6px"></div>
+          </div>
+        </div>
+
+        <!-- station 3 — the investment case (the landing) -->
+        <div class="f5-station" id="f5-st3" style="top:1135px;height:636px">
+          <div class="f5-cap" id="f5-cap3">Investment case &nbsp;&middot;&nbsp; <b>new analytics product line</b></div>
+          <div class="f5-panel" id="f5-panel3" style="height:600px">
+            <img src="assets/screen-invest.png" alt="" style="width:4282.1px;left:-1655.9px;top:-356.8px" />
+            <div class="f5-ov f5-mask card" id="f5-fig-npv" style="left:61.3px;top:172.8px;width:206.3px;height:72.5px"></div>
+            <div class="f5-ov f5-mask card" id="f5-fig-irr" style="left:440.5px;top:172.8px;width:144.9px;height:72.5px"></div>
+            <div class="f5-ov f5-mask card" id="f5-fig-dec" style="left:61.3px;top:401.4px;width:211.9px;height:61.4px"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var q = function (id) { return document.getElementById(id); };
+
+      /* ---------- virtual camera (viewport-change, PAN mode, scale 1) ---------- */
+      var world = q("f5-world");
+      var cam = { x: 0, y: 193.5 };
+      function applyCamera() {
+        world.style.transform = "translate(" + cam.x + "px, " + cam.y + "px)";
+      }
+      applyCamera();
+
+      /* ---------- scenario data (real terminal output, base case verified
+         against assets/screen-model.png) ---------- */
+      var SC = {
+        pes: { rev: [318.4744, 322.2961], yoy: [2.8, 1.2] },
+        base: { rev: [343.2584, 374.8380], yoy: [10.8, 9.2] },
+        opt: { rev: [358.7484, 409.6906], yoy: [15.8, 14.2] }
+      };
+      var MINUS = "−";
+      function money(m) {
+        var s = Math.abs(m).toFixed(1);
+        return (m < 0 ? MINUS : "") + "$" + s + "M";
+      }
+      function pct(p) {
+        return (p < 0 ? MINUS : "") + Math.abs(p).toFixed(1) + "%";
+      }
+
+      var revEl = [q("f5-rev-1"), q("f5-rev-2")];
+      var yoyEl = [q("f5-yoy-1"), q("f5-yoy-2")];
+      var figures = {
+        r0: SC.base.rev[0], r1: SC.base.rev[1],
+        y0: SC.base.yoy[0], y1: SC.base.yoy[1]
+      };
+      function writeFigures() {
+        revEl[0].textContent = money(figures.r0);
+        revEl[1].textContent = money(figures.r1);
+        yoyEl[0].textContent = pct(figures.y0);
+        yoyEl[1].textContent = pct(figures.y1);
+      }
+      writeFigures();
+
+      var SEG = {
+        pes: { left: 6.8, width: 96.1 },
+        base: { left: 102.9, width: 54.8 },
+        opt: { left: 157.7, width: 88.6 }
+      };
+      var segEl = { pes: q("f5-seg-pes"), base: q("f5-seg-base"), opt: q("f5-seg-opt") };
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* =================== SCENE 1 (0.0-2.2) — station one ================== */
+      tl.fromTo(q("f5-panel1"), { opacity: 0.55 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
+      tl.fromTo(q("f5-cap1"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+
+      /* forecast columns reveal left to right — hard, precise wipes */
+      var cols = ["f5-col-a", "f5-col-b", "f5-col-c", "f5-col-d", "f5-col-e"];
+      var colAt = [0.45, 0.72, 0.99, 1.33, 1.70];
+      cols.forEach(function (id, i) {
+        var cov = q(id);
+        var p = { v: 0 };
+        tl.to(p, {
+          v: 1, duration: 0.22, ease: "power3.inOut",
+          onUpdate: function () { cov.style.clipPath = "inset(0 0 0 " + (p.v * 100).toFixed(2) + "%)"; }
+        }, colAt[i]);
+      });
+
+      /* rail steps ANALYZE -> PLAN */
+      tl.to(q("f5-railfill"), { height: "60%", duration: 0.5, ease: "power3.inOut" }, 0.90);
+      tl.to(q("f5-p-plan"), { color: "#F5B83D", duration: 0.3, ease: "power2.out" }, 0.90);
+      tl.to(q("f5-p-analyze"), { opacity: 0.5, duration: 0.3 }, 0.90);
+
+      /* =================== SCENE 2 (2.2-5.0) — the toggle snaps ============= */
+      function snap(at, key) {
+        var s = SEG[key];
+        tl.to(q("f5-pill"), { left: s.left, width: s.width, duration: 0.14, ease: "power3.inOut" }, at);
+        ["pes", "base", "opt"].forEach(function (k) {
+          tl.to(segEl[k], { color: k === key ? "#120E04" : "#A3A199", duration: 0.1, ease: "none" }, at);
+        });
+        /* the table re-reads: figures recompute in place, column by column */
+        tl.to(figures, {
+          r0: SC[key].rev[0], y0: SC[key].yoy[0],
+          duration: 0.34, ease: "power3.out", onUpdate: writeFigures
+        }, at + 0.04);
+        tl.to(figures, {
+          r1: SC[key].rev[1], y1: SC[key].yoy[1],
+          duration: 0.34, ease: "power3.out", onUpdate: writeFigures
+        }, at + 0.10);
+      }
+      snap(2.50, "pes");
+      snap(3.35, "base");
+      snap(4.20, "opt");
+
+      /* export model (.xlsx) catches an amber sweep and holds lit */
+      var sweep = q("f5-sweep");
+      var sp = { v: 0 };
+      tl.to(sweep, { opacity: 1, duration: 0.06, ease: "none" }, 4.46);
+      tl.to(sp, {
+        v: 1, duration: 0.46, ease: "power2.inOut",
+        onUpdate: function () { sweep.style.transform = "translateX(" + (-70 + sp.v * 230).toFixed(2) + "px)"; }
+      }, 4.46);
+      tl.to(sweep, { opacity: 0, duration: 0.08, ease: "none" }, 4.90);
+      tl.to(q("f5-export"), { filter: "brightness(1.16)", duration: 0.3, ease: "power2.out" }, 4.60);
+      tl.fromTo(q("f5-ring"), { opacity: 0 }, { opacity: 1, duration: 0.28, ease: "power2.out" }, 4.62);
+
+      /* ============ SCENE 3 (5.0-8.2) — one pan down to station two ========= */
+      tl.to(cam, { y: -374, duration: 1.60, ease: "power3.inOut", onUpdate: applyCamera }, 5.00);
+
+      /* rail steps PLAN -> DECIDE, kicker follows */
+      tl.to(q("f5-railfill"), { height: "80%", duration: 0.5, ease: "power3.inOut" }, 5.20);
+      tl.to(q("f5-p-decide"), { color: "#F5B83D", duration: 0.3, ease: "power2.out" }, 5.20);
+      tl.to(q("f5-p-plan"), { opacity: 0.5, duration: 0.3 }, 5.20);
+      tl.to(q("f5-kick-plan"), { opacity: 0, duration: 0.18, ease: "none" }, 5.20);
+      tl.fromTo(q("f5-kick-decide"), { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "none" }, 5.34);
+
+      tl.fromTo(q("f5-cap2"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 5.40);
+      tl.fromTo(q("f5-panel2"), { opacity: 0.55 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 5.40);
+
+      /* the two distributions draw in from their centers outward */
+      [["f5-d1l", "left"], ["f5-d1r", "right"], ["f5-d2l", "left"], ["f5-d2r", "right"]].forEach(function (pair) {
+        var el = q(pair[0]);
+        var side = pair[1];
+        var p = { v: 0 };
+        tl.to(p, {
+          v: 1, duration: 0.66, ease: "power2.inOut",
+          onUpdate: function () {
+            var pc = (p.v * 100).toFixed(2);
+            el.style.clipPath = side === "left"
+              ? "inset(0 " + pc + "% 0 0)"
+              : "inset(0 0 0 " + pc + "%)";
+          }
+        }, 6.62);
+      });
+
+      /* then the P10 / P50 / P90 markers drop into place with their values */
+      [["f5-mk-p10", 7.42], ["f5-mk-p50", 7.66], ["f5-mk-p90", 7.90], ["f5-mk-note", 8.06]].forEach(function (m) {
+        tl.fromTo(q(m[0]), { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, m[1]);
+      });
+
+      /* ========== SCENE 4 (8.2-11.2) — the pan continues to station three === */
+      tl.to(cam, { y: -1103, duration: 1.55, ease: "power3.inOut", onUpdate: applyCamera }, 8.20);
+      tl.fromTo(q("f5-cap3"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.60);
+      tl.fromTo(q("f5-panel3"), { opacity: 0.55 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 8.60);
+
+      /* NPV, then IRR, then the verdict — each resolving in the product's own red */
+      [["f5-fig-npv", 9.95, 0.26], ["f5-fig-irr", 10.45, 0.26], ["f5-fig-dec", 10.95, 0.30]].forEach(function (f) {
+        var el = q(f[0]);
+        var p = { v: 0 };
+        tl.to(p, {
+          v: 1, duration: f[2], ease: "power3.inOut",
+          onUpdate: function () { el.style.clipPath = "inset(0 0 0 " + (p.v * 100).toFixed(2) + "%)"; }
+        }, f[1]);
+      });
+
+      /* ========== SCENE 5 (11.2-13.0) — held read, camera fully stopped ===== */
+      var LINE = "IT COMPUTES THE ANSWER · IT DOES NOT FLATTER IT";
+      var foot = q("f5-footline");
+      var tp = { n: 0 };
+      tl.to(tp, {
+        n: LINE.length, duration: 1.10, ease: "none",
+        onUpdate: function () { foot.textContent = LINE.slice(0, Math.round(tp.n)); }
+      }, 11.25);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["05-plan-stress-decide"] = tl;
+      tl.seek(0);
+    })();
+  </script>
+</template>

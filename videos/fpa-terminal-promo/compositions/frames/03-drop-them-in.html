@@ -1,5 +1,16 @@
 <template>
   <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("../../assets/fonts/Geist-latin.woff2") format("woff2");
+      font-weight: 100 900; font-style: normal; font-display: block;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("../../assets/fonts/GeistMono-latin.woff2") format("woff2");
+      font-weight: 100 900; font-style: normal; font-display: block;
+    }
+
     #root {
       position: absolute;
       inset: 0;
@@ -7,7 +18,7 @@
       height: 1080px;
       overflow: hidden;
       container-type: size;
-      font-family: Menlo, ui-monospace, monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       color: #ECEAE4;
     }
 
@@ -143,7 +154,7 @@
   </style>
 
   <div id="root" data-composition-id="03-drop-them-in" data-width="1080" data-height="1080">
-    <div class="f03-ground clip" data-start="0" data-duration="9" data-track-index="0"></div>
+    <div id="f03-ground-t0" class="f03-ground clip" data-start="0" data-duration="9" data-track-index="0"></div>
 
     <div class="f03-screen clip" id="f03-screen" data-start="0" data-duration="9" data-track-index="1">
       <img class="f03-shot" src="assets/screen-load.png" alt="" />
@@ -172,14 +183,14 @@
       </div>
     </div>
 
-    <div class="f03-chips clip" data-start="0" data-duration="9" data-track-index="2">
+    <div id="f03-chips-t2" class="f03-chips clip" data-start="0" data-duration="9" data-track-index="2">
       <div class="f03-chip f03-c1" id="f03-chip1">halcyon_income_statement.csv</div>
       <div class="f03-chip f03-c2" id="f03-chip2">halcyon_balance_sheet.csv</div>
       <div class="f03-chip f03-c3 f03-chip-on" id="f03-chip3">halcyon_billing_ledger.csv</div>
       <div class="f03-chip f03-c4" id="f03-chip4">halcyon_cash_flow.csv</div>
     </div>
 
-    <div class="f03-chrome clip" data-start="0" data-duration="9" data-track-index="3">
+    <div id="f03-chrome-t3" class="f03-chrome clip" data-start="0" data-duration="9" data-track-index="3">
       <div class="f03-kicker">1 &middot; DATA</div>
       <div class="f03-num">03</div>
       <div class="f03-rule"></div>

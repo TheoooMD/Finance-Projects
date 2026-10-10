@@ -1,5 +1,16 @@
 <template>
   <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("../../assets/fonts/Geist-latin.woff2") format("woff2");
+      font-weight: 100 900; font-style: normal; font-display: block;
+    }
+    @font-face {
+      font-family: "Geist Mono";
+      src: url("../../assets/fonts/GeistMono-latin.woff2") format("woff2");
+      font-weight: 100 900; font-style: normal; font-display: block;
+    }
+
     #root {
       position: absolute;
       inset: 0;
@@ -16,8 +27,8 @@
       --f04-line: #262B33;
       --f04-up: #3DD9A0;
       --f04-down: #FF8A7A;
-      --f04-mono: monospace;
-      --f04-sans: system-ui, sans-serif;
+      --f04-mono: "Geist Mono", ui-monospace, monospace;
+      --f04-sans: "Geist", system-ui, sans-serif;
       font-family: var(--f04-sans);
       color: var(--f04-cream);
     }
@@ -99,6 +110,12 @@
       background: var(--f04-ink);
     }
 
+    /* Initial hidden state lives in CSS, not only in tl.set(...) at 0:
+       a zero-duration set at position 0 does not render while the playhead
+       sits exactly at 0, which would flash both elements on frame 0. */
+    #f04-var { opacity: 0; }
+    #f04-varwipe { opacity: 0; }
+
     /* ---- variance wipe ---- */
     .f04-varwipe {
       position: absolute;
@@ -111,7 +128,17 @@
     }
 
     /* ---- scrim ---- */
-    .f04-scrim { background: #050607; opacity: 0; z-index: 3; }
+    .f04-scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(5, 6, 7, 0.30) 0%,
+        rgba(5, 6, 7, 0.42) 50%,
+        rgba(5, 6, 7, 0.94) 72%,
+        rgba(5, 6, 7, 0.98) 100%
+      );
+      opacity: 0;
+      z-index: 3;
+    }
 
     /* ---- chrome ---- */
     .f04-chrome { z-index: 4; }
@@ -207,10 +234,10 @@
     data-height="1080"
   >
     <!-- full-bleed ground -->
-    <div class="f04-layer f04-ground clip" data-start="0" data-duration="9" data-track-index="0"></div>
+    <div id="f04-layer-t0" class="f04-layer f04-ground clip" data-start="0" data-duration="9" data-track-index="0"></div>
 
     <!-- seated screen: full-bleed, scale 1.0, opacity 1, centered -->
-    <div class="f04-layer f04-screen clip" data-start="0" data-duration="9" data-track-index="1">
+    <div id="f04-layer-t1" class="f04-layer f04-screen clip" data-start="0" data-duration="9" data-track-index="1">
       <img id="f04-dash" class="f04-shot" src="assets/screen-dashboard.png" alt="" />
       <img id="f04-var" class="f04-shot" src="assets/screen-variance.png" alt="" />
       <div id="f04-sweep" class="f04-sweep"></div>
@@ -228,7 +255,7 @@
     <div id="f04-scrim" class="f04-layer f04-scrim clip" data-start="0" data-duration="9" data-track-index="4"></div>
 
     <!-- chrome: kicker, catalogue numeral, sample-data disclosure, pillar rail -->
-    <div class="f04-layer f04-chrome clip" data-start="0" data-duration="9" data-track-index="5">
+    <div id="f04-layer-t5" class="f04-layer f04-chrome clip" data-start="0" data-duration="9" data-track-index="5">
       <div id="f04-kick" class="f04-kick">2 &middot; Analyze</div>
       <div id="f04-numm" class="f04-num">04</div>
       <div id="f04-sample" class="f04-sample">Sample data</div>
@@ -244,7 +271,7 @@
     </div>
 
     <!-- closing statement -->
-    <div class="f04-layer f04-statement clip" data-start="0" data-duration="9" data-track-index="6">
+    <div id="f04-layer-t6" class="f04-layer f04-statement clip" data-start="0" data-duration="9" data-track-index="6">
       <div id="f04-rule" class="f04-rule"></div>
       <div class="f04-say">
         <span class="f04-w">it</span> <span class="f04-w">reads</span>
@@ -256,7 +283,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script src="../../vendor/gsap.min.js"></script>
   <script>
     (function () {
       var root = document.querySelector('[data-composition-id="04-reads-it-back"]');
@@ -366,6 +393,28 @@
       var wordEls = root.querySelectorAll('.f04-w');
 
       /* ---------- timeline ---------- */
+      /* Count-up rendered by a GSAP plugin, not a callback: plugin render() runs on every
+         seek (including suppressEvents seeks), so the numerals are deterministic + seek-safe. */
+      var PLUG = false;
+      try {
+        gsap.registerPlugin({
+          name: 'f04num',
+          init: function (target, vars) {
+            this.el = target;
+            this.from = 0;
+            this.to = vars.to;
+            this.fmt = vars.fmt;
+            this._props.push('f04num');
+          },
+          render: function (ratio, data) {
+            data.el.textContent = render(data.from + (data.to - data.from) * ratio, data.fmt);
+          }
+        });
+        PLUG = !!(gsap.plugins && gsap.plugins.f04num);
+      } catch (err) {
+        PLUG = false;
+      }
+
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
 
@@ -412,16 +461,22 @@
           var at = 1.2 + 0.17 * idx;
           var obj = counters[idx];
           var spec = KPI[idx];
-          tl.fromTo(obj,
-            { v: 0 },
-            {
-              v: spec.to,
-              duration: 1.05,
-              ease: 'power2.out',
-              onUpdate: function () {
-                valEls[idx].textContent = render(obj.v, spec.fmt);
-              }
-            }, at);
+          if (PLUG) {
+            tl.fromTo(valEls[idx],
+              { f04num: { to: 0, fmt: spec.fmt } },
+              { f04num: { to: spec.to, fmt: spec.fmt }, duration: 1.05, ease: 'power2.out' }, at);
+          } else {
+            tl.fromTo(obj,
+              { v: 0 },
+              {
+                v: spec.to,
+                duration: 1.05,
+                ease: 'power2.out',
+                onUpdate: function () {
+                  valEls[idx].textContent = render(obj.v, spec.fmt);
+                }
+              }, at);
+          }
           /* counting-dynamic-scale: the numeral grows with the value, landing at screenshot size */
           tl.fromTo(valEls[idx],
             { scale: 0.9, opacity: 0.55 },
@@ -454,7 +509,7 @@
       tl.to('#f04-varwipe', { scaleX: 0, duration: 0.8, ease: 'power2.out' }, 5.76);
 
       /* ================= Scene 4 (6.6-9.0) — the statement, held ================= */
-      tl.to('#f04-scrim', { opacity: 0.54, duration: 0.42, ease: 'power2.out' }, 6.55);
+      tl.to('#f04-scrim', { opacity: 1, duration: 0.42, ease: 'power2.out' }, 6.55);
       tl.to('#f04-rule', { scaleX: 1, duration: 0.34, ease: 'power3.out' }, 6.6);
       for (var w = 0; w < wordEls.length; w++) {
         tl.fromTo(wordEls[w],
