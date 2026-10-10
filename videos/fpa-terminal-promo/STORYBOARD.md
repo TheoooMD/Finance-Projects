@@ -64,7 +64,7 @@ failure** (independent elements drifting with nothing leading).
 - scene: The thesis builds in three hard type beats on near-black, amber landing the payoff
 - duration: 8s
 - transition_in: cut
-- status: built
+- status: animated
 - type: hook
 - persuasion: Value claim up front
 - beat: assertion
@@ -100,7 +100,7 @@ baseline rhythm before the density of frame 02.
 - scene: The real file names and row counts stack up, then the task list cascades past faster than it can be read
 - duration: 10s
 - transition_in: cut
-- status: built
+- status: animated
 - type: pain_point
 - persuasion: Pain agitation, stated as scope
 - beat: accumulation
@@ -139,7 +139,7 @@ at low opacity — staging the handoff.
 - scene: The filename chips fall into the terminal's real IS / BS / CF slots, which light amber and confirm
 - duration: 9s
 - transition_in: cut
-- status: built
+- status: animated
 - type: product_intro
 - persuasion: The turn — the promise made concrete
 - beat: resolution
@@ -176,7 +176,7 @@ only. The screen is now seated where frame 04 will continue from.
 - scene: The dashboard seats, eight KPI tiles count up, then the mix donuts and the revenue bars draw in
 - duration: 9s
 - transition_in: cut
-- status: built
+- status: animated
 - type: feature_showcase
 - persuasion: Value demonstrated, not described
 - beat: payoff
@@ -214,7 +214,7 @@ over the lower-left, the screen dimming slightly behind it. Held read to the end
 - scene: The pillar rail steps PLAN → DECIDE while the three-statement forecast, the Monte Carlo distributions and the NPV verdict hand off to each other
 - duration: 13s
 - transition_in: cut
-- status: built
+- status: animated
 - type: feature_showcase
 - persuasion: Evidence block — depth that earns the memo
 - beat: escalation
@@ -257,7 +257,7 @@ eleven seconds of continuous travel is what makes the verdict land.
 - scene: The CFO memo's findings cascade in as severity rows, each red flag landing with its real number
 - duration: 12s
 - transition_in: cut
-- status: built
+- status: animated
 - type: benefit_highlight
 - persuasion: The deliverable — the most expensive thing the terminal replaces
 - beat: climax
@@ -303,7 +303,7 @@ and fades out as the ground returns to flat canvas.
 - scene: The five pillars snap into a row, the hero line resolves, the wordmark locks up
 - duration: 9s
 - transition_in: cut
-- status: built
+- status: animated
 - type: branding
 - persuasion: Identity, earned by the six frames behind it
 - beat: sign-off
