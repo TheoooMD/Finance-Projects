@@ -20,7 +20,7 @@
       width: 1080px;
       height: 1080px;
       overflow: hidden;
-      font-family: "Geist", sans-serif;
+      font-family: "Geist", system-ui, sans-serif;
       color: #ECEAE4;
       container-type: size;
     }
@@ -42,7 +42,7 @@
       top: 59px;
       width: 420px;
       height: 26px;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 22px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -58,10 +58,10 @@
       position: absolute;
       right: 59px;
       top: 59px;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 22px;
       letter-spacing: 0.12em;
-      color: #6B7280;
+      color: #767D89;
     }
 
     #root .f5-rail {
@@ -88,10 +88,10 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 18px;
       letter-spacing: 0.12em;
-      color: #6B7280;
+      color: #767D89;
     }
 
     #root .f5-footline {
@@ -100,11 +100,11 @@
       right: 59px;
       bottom: 59px;
       height: 20px;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 14px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #6B7280;
+      color: #767D89;
       white-space: nowrap;
     }
 
@@ -122,7 +122,7 @@
       left: 0;
       top: 0;
       width: 804px;
-      height: 1771px;
+      height: 1691px;
       transform-origin: 50% 50%;
       will-change: transform;
     }
@@ -132,11 +132,11 @@
       height: 36px;
       display: flex;
       align-items: center;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 13px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #6B7280;
+      color: #767D89;
       white-space: nowrap;
     }
     #root .f5-cap b { color: #ECEAE4; font-weight: 500; }
@@ -146,10 +146,10 @@
       display: flex;
       align-items: center;
       gap: 26px;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 14px;
       letter-spacing: 0.1em;
-      color: #6B7280;
+      color: #767D89;
     }
     #root .f5-read i { font-style: normal; color: #F5B83D; margin-left: 8px; }
 
@@ -175,32 +175,31 @@
       border: 1.6px solid #F5B83D;
       border-radius: 7px;
       background: #08090B;
-      padding: 6.8px;
     }
     #root .f5-pill {
       position: absolute;
-      top: 6.8px;
-      left: 6.8px;
-      width: 96.1px;
+      top: 5.2px;
+      left: 101.3px;
+      width: 54.8px;
       height: 32.8px;
       background: #F5B83D;
       border-radius: 4px;
     }
     #root .f5-seg {
       position: absolute;
-      top: 6.8px;
+      top: 5.2px;
       height: 32.8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: "Geist", sans-serif;
+      font-family: "Geist", system-ui, sans-serif;
       font-size: 12.5px;
       font-weight: 500;
       color: #A3A199;
     }
-    #root #f5-seg-pes { left: 6.8px; width: 96.1px; }
-    #root #f5-seg-base { left: 102.9px; width: 54.8px; }
-    #root #f5-seg-opt { left: 157.7px; width: 88.6px; }
+    #root #f5-seg-pes { left: 5.2px; width: 96.1px; }
+    #root #f5-seg-base { left: 101.3px; width: 54.8px; }
+    #root #f5-seg-opt { left: 156.1px; width: 88.6px; }
 
     /* --- station 1 live overlay: export button --- */
     #root .f5-export {
@@ -211,6 +210,7 @@
       background: #F5B83D;
       border-radius: 5px;
       overflow: hidden;
+      filter: brightness(1);
     }
     #root .f5-export em {
       position: absolute;
@@ -218,7 +218,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: "Geist", sans-serif;
+      font-family: "Geist", system-ui, sans-serif;
       font-style: normal;
       font-size: 12.5px;
       font-weight: 700;
@@ -257,7 +257,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      font-family: "Geist Mono", monospace;
+      font-family: "Geist Mono", ui-monospace, monospace;
       font-size: 12.7px;
       white-space: nowrap;
     }
@@ -282,9 +282,9 @@
     data-width="1080"
     data-height="1080"
   >
-    <div class="clip f5-bg" data-start="0" data-duration="13" data-track-index="0"></div>
+    <div id="f5-ground" class="clip f5-bg" data-start="0" data-duration="13" data-track-index="0"></div>
 
-    <div class="clip f5-chrome" data-start="0" data-duration="13" data-track-index="1">
+    <div id="f5-chrome" class="clip f5-chrome" data-start="0" data-duration="13" data-track-index="1">
       <div class="f5-kicker">
         <span id="f5-kick-plan">3 &middot; Plan</span>
         <span id="f5-kick-decide" style="opacity:0">4 &middot; Decide</span>
@@ -301,7 +301,7 @@
       <div class="f5-footline" id="f5-footline"></div>
     </div>
 
-    <div class="clip f5-window" data-start="0" data-duration="13" data-track-index="2">
+    <div id="f5-camera" class="clip f5-window" data-start="0" data-duration="13" data-track-index="2">
       <div class="f5-world" id="f5-world">
 
         <!-- station 1 — integrated three-statement forecast -->
@@ -359,13 +359,13 @@
         </div>
 
         <!-- station 3 — the investment case (the landing) -->
-        <div class="f5-station" id="f5-st3" style="top:1135px;height:636px">
+        <div class="f5-station" id="f5-st3" style="top:1135px;height:556px">
           <div class="f5-cap" id="f5-cap3">Investment case &nbsp;&middot;&nbsp; <b>new analytics product line</b></div>
-          <div class="f5-panel" id="f5-panel3" style="height:600px">
-            <img src="assets/screen-invest.png" alt="" style="width:4282.1px;left:-1655.9px;top:-356.8px" />
-            <div class="f5-ov f5-mask card" id="f5-fig-npv" style="left:61.3px;top:172.8px;width:206.3px;height:72.5px"></div>
-            <div class="f5-ov f5-mask card" id="f5-fig-irr" style="left:440.5px;top:172.8px;width:144.9px;height:72.5px"></div>
-            <div class="f5-ov f5-mask card" id="f5-fig-dec" style="left:61.3px;top:401.4px;width:211.9px;height:61.4px"></div>
+          <div class="f5-panel" id="f5-panel3" style="height:520px">
+            <img src="assets/screen-invest.png" alt="" style="width:4435.9px;left:-1744.3px;top:-456.3px" />
+            <div class="f5-ov f5-mask card" id="f5-fig-npv" style="left:34.7px;top:92.4px;width:213.7px;height:75.1px"></div>
+            <div class="f5-ov f5-mask card" id="f5-fig-irr" style="left:427.4px;top:92.4px;width:150.2px;height:75.1px"></div>
+            <div class="f5-ov f5-mask card" id="f5-fig-dec" style="left:34.7px;top:329.2px;width:219.5px;height:63.6px"></div>
           </div>
         </div>
 
@@ -416,13 +416,20 @@
       writeFigures();
 
       var SEG = {
-        pes: { left: 6.8, width: 96.1 },
-        base: { left: 102.9, width: 54.8 },
-        opt: { left: 157.7, width: 88.6 }
+        pes: { x: -96.1, width: 96.1 },
+        base: { x: 0, width: 54.8 },
+        opt: { x: 54.8, width: 88.6 }
       };
       var segEl = { pes: q("f5-seg-pes"), base: q("f5-seg-base"), opt: q("f5-seg-opt") };
 
       var tl = gsap.timeline({ paused: true });
+
+      /* base case is the screenshot's own state — pinned at t=0 */
+      tl.to(figures, {
+        r0: SC.base.rev[0], r1: SC.base.rev[1],
+        y0: SC.base.yoy[0], y1: SC.base.yoy[1],
+        duration: 0.01, ease: "none", onUpdate: writeFigures
+      }, 0);
 
       /* =================== SCENE 1 (0.0-2.2) — station one ================== */
       tl.fromTo(q("f5-panel1"), { opacity: 0.55 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0);
@@ -448,7 +455,7 @@
       /* =================== SCENE 2 (2.2-5.0) — the toggle snaps ============= */
       function snap(at, key) {
         var s = SEG[key];
-        tl.to(q("f5-pill"), { left: s.left, width: s.width, duration: 0.14, ease: "power3.inOut" }, at);
+        tl.to(q("f5-pill"), { x: s.x, width: s.width, duration: 0.14, ease: "power3.inOut" }, at);
         ["pes", "base", "opt"].forEach(function (k) {
           tl.to(segEl[k], { color: k === key ? "#120E04" : "#A3A199", duration: 0.1, ease: "none" }, at);
         });
@@ -513,7 +520,7 @@
       });
 
       /* ========== SCENE 4 (8.2-11.2) — the pan continues to station three === */
-      tl.to(cam, { y: -1103, duration: 1.55, ease: "power3.inOut", onUpdate: applyCamera }, 8.20);
+      tl.to(cam, { y: -1063, duration: 1.55, ease: "power3.inOut", onUpdate: applyCamera }, 8.20);
       tl.fromTo(q("f5-cap3"), { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.60);
       tl.fromTo(q("f5-panel3"), { opacity: 0.55 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 8.60);
 
