@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FP&amp;A Terminal — Storyboard v1</title>
+<style>
+  :root{
+    --ink:#0F1115;        /* ground (dark register) */
+    --ink-alt:#161A20;
+    --amber:#F5B83D;      /* the only accent */
+    --cream:#ECEAE4;      /* text on dark */
+    --muted:#9AA2AD;
+    --hint:#6B7280;
+    --line:#262B33;
+    --sheet:#07080A;
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sheet);color:var(--cream);font-family:var(--sans);
+       padding:40px clamp(16px,4vw,56px) 80px}
+
+  /* ---------- header ---------- */
+  header{max-width:1700px;margin:0 auto 34px;border-bottom:1px solid var(--line);padding-bottom:22px}
+  .vtag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+        color:var(--amber);margin-bottom:12px}
+  h1{font-size:clamp(28px,4vw,46px);font-weight:700;letter-spacing:-.03em;line-height:.95;margin:0 0 10px}
+  .dek{color:var(--muted);font-size:15px;max-width:72ch;line-height:1.55;margin:0 0 14px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px}
+  .meta span{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+             color:var(--muted);border:1px solid var(--line);padding:4px 9px}
+
+  /* ---------- grid ---------- */
+  .grid{max-width:1700px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:30px 26px}
+  @media (max-width:1180px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:780px){.grid{grid-template-columns:1fr}}
+
+  .cell figure{margin:0}
+  .frame{aspect-ratio:1/1;container-type:inline-size;background:var(--ink);
+         border:1px solid var(--line);position:relative;overflow:hidden}
+
+  .lbl{display:flex;justify-content:space-between;gap:10px;margin-top:9px;
+       font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+  .lbl b{font-weight:600;color:var(--cream)}
+  .lbl i{font-style:normal;color:var(--hint)}
+  .note{color:var(--muted);font-size:12.5px;line-height:1.55;margin:7px 0 0}
+  .note b{color:var(--cream);font-weight:600}
+  .seam{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:9.5px;
+        letter-spacing:.12em;text-transform:uppercase;color:var(--amber);
+        border:1px solid var(--amber);padding:3px 7px}
+
+  /* ---------- in-frame atoms (all cqw) ---------- */
+  .pad{position:absolute;inset:0;padding:5.5cqw}
+  .kick{font-family:var(--mono);font-size:2.1cqw;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+  .kick.d{color:var(--hint)}
+  .num{position:absolute;top:5.5cqw;right:5.5cqw;font-family:var(--mono);font-size:2.1cqw;
+       letter-spacing:.12em;color:var(--hint)}
+  .disp{font-size:11.5cqw;font-weight:700;line-height:.9;letter-spacing:-.04em;text-transform:lowercase}
+  .h1{font-size:8cqw;font-weight:700;line-height:.95;letter-spacing:-.03em;text-transform:lowercase}
+  .h2{font-size:5.6cqw;font-weight:700;line-height:1.05;letter-spacing:-.02em;text-transform:lowercase}
+  .lead{font-size:2.6cqw;font-weight:400;line-height:1.45;color:var(--muted)}
+  .am{color:var(--amber)}
+  .dim{color:var(--hint)}
+  .rule{width:9cqw;height:.45cqw;background:var(--amber);margin:0 0 2.6cqw}
+  .hair{height:1px;background:var(--line);width:100%}
+
+  /* stand-in for a captured screen */
+  .shot{position:absolute;background:var(--ink-alt);border:1px solid var(--line)}
+  .shot .bar{height:4.2cqw;border-bottom:1px solid var(--line);display:flex;align-items:center;
+             gap:1.4cqw;padding:0 1.8cqw}
+  .dot{width:1.1cqw;height:1.1cqw;background:var(--line)}
+  .shotlbl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;
+           font-family:var(--mono);font-size:2cqw;letter-spacing:.12em;text-transform:uppercase;
+           color:var(--hint);line-height:1.7;width:90%}
+  .focal{border-color:var(--amber)}
+
+  .chip{display:inline-block;font-family:var(--mono);font-size:1.9cqw;letter-spacing:.06em;
+        color:var(--muted);border:1px solid var(--line);padding:.8cqw 1.2cqw;background:var(--ink)}
+  .chip.on{border-color:var(--amber);color:var(--amber)}
+
+  .tile{border-top:1px solid var(--line);padding:1.2cqw 0 0}
+  .tile .k{font-family:var(--mono);font-size:1.5cqw;letter-spacing:.1em;text-transform:uppercase;color:var(--hint)}
+  .tile .v{font-size:4.2cqw;font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-top:.4cqw}
+  .tile.hi{border-top-color:var(--amber)}
+  .tile.hi .v{color:var(--amber)}
+
+  .row{display:flex;align-items:flex-start;gap:1.6cqw;padding:1.5cqw 0;border-bottom:1px solid var(--line)}
+  .sev{font-family:var(--mono);font-size:1.6cqw;letter-spacing:.1em;padding:.5cqw .9cqw;flex:0 0 auto}
+  .sev.r{color:#FF8A7A;border:1px solid #FF8A7A}
+  .sev.w{color:var(--amber);border:1px solid var(--amber)}
+  .rowtx{font-size:2.1cqw;line-height:1.45;color:var(--cream)}
+
+  /* rail */
+  .rail{position:absolute;left:5.5cqw;top:16cqw;bottom:9cqw;width:.35cqw;background:var(--line)}
+  .rail i{position:absolute;left:0;width:100%;background:var(--amber);display:block}
+  .railnames{position:absolute;left:8.4cqw;top:16cqw;display:flex;flex-direction:column;
+             justify-content:space-between;height:calc(100% - 25cqw);
+             font-family:var(--mono);font-size:1.7cqw;letter-spacing:.12em;color:var(--hint)}
+  .railnames b{color:var(--amber);font-weight:500}
+
+  /* closing cells */
+  .wide{grid-column:1/-1}
+  .strip{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;border:1px solid var(--line);background:var(--line)}
+  .strip div{background:var(--ink);padding:16px 12px;min-height:118px;display:flex;flex-direction:column;
+             justify-content:space-between}
+  .strip .n{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--amber)}
+  .strip .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--hint);text-transform:uppercase}
+  .strip .t{font-size:12px;color:var(--muted);line-height:1.4}
+
+  .tok{border:1px solid var(--line);padding:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  @media (max-width:780px){.tok{grid-template-columns:1fr}}
+  .tok h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+          color:var(--amber);margin:0 0 12px;font-weight:500}
+  .sw{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .sw span{width:26px;height:18px;border:1px solid var(--line);flex:0 0 auto}
+  .tok ul{margin:0;padding-left:16px;color:var(--muted);font-size:12.5px;line-height:1.7}
+  .tok ul.ban li::marker{color:#FF8A7A}
+  h2.sec{max-width:1700px;margin:52px auto 18px;font-family:var(--mono);font-size:11px;
+         letter-spacing:.16em;text-transform:uppercase;color:var(--hint);font-weight:500}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="vtag">Storyboard · v1 · sketch pass</div>
+  <h1>FP&amp;A Terminal — launch film</h1>
+  <p class="dek">Tells senior FP&amp;A and corporate finance that <b style="color:var(--cream)">their statements go in and the whole model comes out</b>. Silent by design: LinkedIn plays muted, so on-screen type carries the message. Every number shown is real output from the terminal's demo company.</p>
+  <div class="meta">
+    <span>1080 × 1080</span><span>70 s</span><span>7 frames</span>
+    <span>Preset · broadside (dark register)</span><span>Silent · no VO, no BGM</span>
+    <span>LinkedIn feed</span>
+  </div>
+</header>
+
+<h2 class="sec">Act I — the trade (0–18s)</h2>
+<div class="grid">
+
+  <!-- 01 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-01">
+      <div class="pad">
+        <div class="num">01</div>
+        <div class="kick">ANALYZE · MODEL · VALUE · COMMUNICATE</div>
+        <div style="position:absolute;left:5.5cqw;right:5.5cqw;top:30cqw">
+          <div class="disp dim" style="opacity:.3;font-size:9.6cqw">three statements in.</div>
+          <div class="disp" style="margin-top:1.5cqw">one integrated<br>model out.</div>
+          <div class="rule" style="margin:4.5cqw 0 2.2cqw"></div>
+          <div class="h2 am">the whole fp&amp;a loop.<br>one terminal.</div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl"><b>01 · Statements in, model out</b><i>hook · 0–8s</i></div>
+    <p class="note"><b>Beat 1 ghosts out as beat 2 hard-cuts in</b> — no crossfade, no easing softness. The amber payoff line builds last, word by word, and is the only color in the frame. No product, no logo yet.</p>
+    <span class="seam">out → cut</span>
+  </figure></div>
+
+  <!-- 02 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-02">
+      <div class="pad">
+        <div class="num">02</div>
+        <div class="kick d">WHAT THAT NORMALLY COSTS</div>
+        <div style="position:absolute;left:5.5cqw;right:5.5cqw;top:17cqw;display:flex;flex-wrap:wrap;gap:1.4cqw">
+          <span class="chip">halcyon_income_statement.csv</span>
+          <span class="chip">halcyon_balance_sheet.csv</span>
+          <span class="chip">halcyon_cash_flow.csv</span>
+          <span class="chip on">halcyon_billing_ledger.csv · 56.7K lines</span>
+        </div>
+        <div style="position:absolute;left:5.5cqw;right:5.5cqw;top:41cqw">
+          <div class="hair" style="margin-bottom:2.4cqw"></div>
+          <div class="h2" style="line-height:1.22;font-size:4.4cqw">
+            <span style="opacity:1">retype</span> <span class="dim">/</span>
+            <span style="opacity:.92">re-link</span> <span class="dim">/</span>
+            <span style="opacity:.78">tie out</span> <span class="dim">/</span>
+            <span style="opacity:.62">bridge the variance</span> <span class="dim">/</span>
+            <span style="opacity:.44">rebuild the scenarios</span> <span class="dim">/</span>
+            <span style="opacity:.28">re-run the covenants</span> <span class="dim">/</span>
+            <span style="opacity:.16">re-cut the deck</span>
+          </div>
+        </div>
+        <div style="position:absolute;left:5.5cqw;bottom:5.5cqw;right:5.5cqw" class="kick d">…AND AGAIN NEXT MONTH</div>
+      </div>
+    </div>
+    <div class="lbl"><b>02 · What that normally costs</b><i>pain · 8–18s</i></div>
+    <p class="note"><b>The four chips land first, then the task list cascades</b> and accelerates past readable speed, fading down the stack. Density is the argument — no invented day-count. The ledger chip is amber because it is the one with the row number on it.</p>
+    <span class="seam">out → chips hold position</span>
+  </figure></div>
+
+  <!-- 03 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-03">
+      <div class="pad">
+        <div class="num">03</div>
+        <div class="kick">1 · DATA</div>
+      </div>
+      <div class="shot focal" style="left:5.5cqw;right:5.5cqw;top:14cqw;bottom:20cqw">
+        <div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot" style="background:var(--amber)"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.4cqw;padding:2.4cqw">
+          <div style="border:1px dashed var(--amber);padding:1.6cqw">
+            <div class="kick" style="font-size:1.6cqw">IS</div>
+            <div style="font-size:2cqw;margin-top:.6cqw">Income statement</div></div>
+          <div style="border:1px dashed var(--amber);padding:1.6cqw">
+            <div class="kick" style="font-size:1.6cqw">BS</div>
+            <div style="font-size:2cqw;margin-top:.6cqw">Balance sheet</div></div>
+          <div style="border:1px dashed var(--line);padding:1.6cqw">
+            <div class="kick d" style="font-size:1.6cqw">CF</div>
+            <div style="font-size:2cqw;margin-top:.6cqw;color:var(--muted)">Cash flow</div></div>
+        </div>
+        <div style="padding:0 2.4cqw 2.4cqw"><div style="border:1px solid var(--line);padding:1.6cqw">
+          <div class="kick d" style="font-size:1.6cqw">OPS · 56.7K ROWS</div></div></div>
+      </div>
+      <div style="position:absolute;left:5.5cqw;right:5.5cqw;bottom:5.5cqw;font-family:var(--mono);
+                  font-size:1.9cqw;line-height:1.6;color:var(--amber)">
+        &gt; Loaded: Halcyon Cloud Systems, FY2023–FY2025<br>
+        <span class="dim">&nbsp;&nbsp;plus 56.7K billing lines through Aug 2026_</span>
+      </div>
+    </div>
+    <div class="lbl"><b>03 · Drop them in</b><i>product intro · 18–27s</i></div>
+    <p class="note"><b>The chips from 02 keep their exact position and fall into the real slots.</b> Each dashed border snaps solid amber as its file lands, left to right. The console line types underneath. First appearance of the product, doing the thing the hook promised.</p>
+    <span class="seam">in ← chips fall · out → screen seats full-bleed</span>
+  </figure></div>
+</div>
+
+<h2 class="sec">Act II — the proof (27–49s)</h2>
+<div class="grid">
+
+  <!-- 04 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-04">
+      <div class="pad"><div class="num">04</div><div class="kick">2 · ANALYZE</div></div>
+      <div class="rail"><i style="top:0;height:40%"></i></div>
+      <div class="railnames"><b>DATA</b><b>ANALYZE</b><span>PLAN</span><span>DECIDE</span><span>COMMS</span></div>
+      <div class="shot" style="left:20cqw;right:5.5cqw;top:14cqw;bottom:22cqw">
+        <div class="bar"><div class="dot"></div><div class="dot"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6cqw;padding:2.2cqw">
+          <div class="tile hi"><div class="k">REVENUE</div><div class="v">$29.4M</div></div>
+          <div class="tile"><div class="k">GROSS MARGIN</div><div class="v">72.8%</div></div>
+          <div class="tile"><div class="k">ACTIVE CUST.</div><div class="v">1,367</div></div>
+          <div class="tile"><div class="k">NEW CUST.</div><div class="v">+51.6%</div></div>
+        </div>
+        <div style="padding:0 2.2cqw;display:flex;align-items:flex-end;gap:.9cqw;height:11cqw">
+          <div style="flex:1;background:var(--line);height:38%"></div>
+          <div style="flex:1;background:var(--amber);height:54%"></div>
+          <div style="flex:1;background:var(--line);height:46%"></div>
+          <div style="flex:1;background:var(--amber);height:70%"></div>
+          <div style="flex:1;background:var(--line);height:58%"></div>
+          <div style="flex:1;background:var(--amber);height:88%"></div>
+        </div>
+      </div>
+      <div style="position:absolute;left:5.5cqw;right:5.5cqw;bottom:5.5cqw">
+        <div class="h2" style="font-size:4cqw">it reads the business<br>back to you.</div>
+      </div>
+    </div>
+    <div class="lbl"><b>04 · It reads the business back</b><i>feature · 27–36s</i></div>
+    <p class="note"><b>The dashboard arrives already populated — that is the point.</b> All eight KPI tiles count up to their real values (four shown here as stand-in), deltas resolve, then the revenue bars draw left to right. The pillar rail appears here and runs through to frame 06.</p>
+    <span class="seam">in ← screen seated · out → rail holds at x 6%</span>
+  </figure></div>
+
+  <!-- 05 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-05">
+      <div class="pad"><div class="num">05</div><div class="kick">3 · PLAN &nbsp;→&nbsp; 4 · DECIDE</div></div>
+      <div class="rail"><i style="top:0;height:80%"></i></div>
+      <div class="railnames"><span>DATA</span><span>ANALYZE</span><b>PLAN</b><b>DECIDE</b><span>COMMS</span></div>
+      <div class="shot" style="left:20cqw;right:5.5cqw;top:13cqw;height:20cqw">
+        <div class="shotlbl">3-STATEMENT MODEL · FY26E→FY30E<br><span style="color:var(--amber)">PESSIMISTIC / BASE / OPTIMISTIC</span></div>
+      </div>
+      <div class="shot" style="left:20cqw;right:5.5cqw;top:35cqw;height:19cqw">
+        <div class="shotlbl">MONTE CARLO · 5,000 ITERATIONS<br><span style="color:var(--amber)">P10 · P50 · P90</span></div>
+      </div>
+      <div class="shot focal" style="left:20cqw;right:5.5cqw;top:56cqw;bottom:18cqw">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2.4cqw">
+          <div style="text-align:center"><div class="k kick d" style="font-size:1.5cqw">NPV</div>
+            <div style="font-size:3.4cqw;font-weight:700;color:#FF8A7A">−$421K</div></div>
+          <div style="text-align:center"><div class="k kick d" style="font-size:1.5cqw">IRR</div>
+            <div style="font-size:3.4cqw;font-weight:700;color:#FF8A7A">9.5%</div></div>
+          <div style="text-align:center"><div class="k kick d" style="font-size:1.5cqw">DECISION</div>
+            <div style="font-size:3.4cqw;font-weight:700;color:#FF8A7A">Reject</div></div>
+        </div>
+      </div>
+      <div style="position:absolute;left:5.5cqw;right:5.5cqw;bottom:5.5cqw" class="kick d">IT COMPUTES THE ANSWER · IT DOES NOT FLATTER IT</div>
+    </div>
+    <div class="lbl"><b>05 · Plan it, stress it, decide it</b><i>feature · 36–49s</i></div>
+    <p class="note"><b>One continuous vertical move across three stations</b>, the rail stepping PLAN then DECIDE. Scenario toggle snaps and the table re-reads; distributions draw in; the verdict lands last and holds. Red appears only inside the captured screen, never as a frame accent.</p>
+    <span class="seam">in ← rail at ANALYZE · out → rail at DECIDE</span>
+  </figure></div>
+
+  <!-- 06 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-06">
+      <div class="pad"><div class="num">06</div><div class="kick">5 · COMMUNICATE</div></div>
+      <div class="rail"><i style="top:0;height:100%"></i></div>
+      <div style="position:absolute;left:5.5cqw;right:5.5cqw;top:14cqw">
+        <div class="h2" style="font-size:4.2cqw;margin-left:2.9cqw">sr fp&amp;a memo<br>to the cfo.</div>
+      </div>
+      <div style="position:absolute;left:8.4cqw;right:5.5cqw;top:33cqw;bottom:13cqw">
+        <div class="row"><span class="sev r">RED FLAG</span><span class="rowtx">DSO rose 8 days to 58 — about <b class="am">$6.8M</b> of cash tied up</span></div>
+        <div class="row"><span class="sev r">RED FLAG</span><span class="rowtx">Mix shift to Professional services cut gross margin <b class="am">2.7 pts</b></span></div>
+        <div class="row"><span class="sev r">RED FLAG</span><span class="rowtx">Monte Carlo: <b class="am">34.6%</b> chance of a covenant breach</span></div>
+        <div class="row" style="opacity:.55"><span class="sev w">WATCH</span><span class="rowtx">EMEA <b>$7.2M</b> below budget — volume, not price</span></div>
+      </div>
+      <div style="position:absolute;left:8.4cqw;right:5.5cqw;bottom:5.5cqw" class="kick">A BOARD-READY READ · DRIVERS · CASH · RISKS</div>
+    </div>
+    <div class="lbl"><b>06 · The memo writes itself</b><i>payoff · 49–61s</i></div>
+    <p class="note"><b>Rows cascade in one by one, each holding long enough to read.</b> The amber is on the numbers only — the severity pills carry their own red from the product. This is the deliverable that normally costs a day of writing, and every figure traces back to the files dropped in 03.</p>
+    <span class="seam">out → screen scales 1.04 + fades to flat canvas</span>
+  </figure></div>
+</div>
+
+<h2 class="sec">Act III — the sign-off (61–70s)</h2>
+<div class="grid">
+
+  <!-- 07 -->
+  <div class="cell"><figure>
+    <div class="frame" id="frame-07">
+      <div class="pad">
+        <div class="num">07</div>
+        <div style="position:absolute;left:5.5cqw;right:5.5cqw;top:22cqw">
+          <div class="rule"></div>
+          <div class="h1" style="font-size:7cqw">from raw statements<br>to a <span class="am">defensible</span><br>valuation.</div>
+        </div>
+        <div style="position:absolute;left:5.5cqw;right:5.5cqw;top:62cqw;display:flex;gap:1.1cqw;flex-wrap:wrap">
+          <span class="chip on">DATA</span><span class="chip on">ANALYZE</span><span class="chip on">PLAN</span>
+          <span class="chip on">DECIDE</span><span class="chip on">COMMUNICATE</span>
+        </div>
+        <div style="position:absolute;left:5.5cqw;right:5.5cqw;bottom:5.5cqw">
+          <div class="hair" style="margin-bottom:2.2cqw"></div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:2cqw">
+            <div>
+              <div style="font-size:3.4cqw;font-weight:700;letter-spacing:-.02em">FP&amp;A Terminal</div>
+              <div class="kick d" style="margin-top:.8cqw;font-size:1.6cqw">BUILT BY MINH-DUC THÉO HO</div>
+            </div>
+            <div class="kick d" style="font-size:1.5cqw;text-align:right;line-height:1.8">
+              READS PITCHBOOK · 10-K PDF · CSV · EXCEL<br>
+              <span class="am">EXPORTS LIVE-FORMULA EXCEL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl"><b>07 · One terminal for the whole loop</b><i>brand · 61–70s</i></div>
+    <p class="note"><b>The five pillars snap into a row</b>, each already proven by the frames behind it. The hero line resolves with the site's own amber emphasis, then the lockup. Final 2s are completely still — after 60s of density, stillness is the sign-off.</p>
+    <span class="seam">in ← flat canvas, clean</span>
+  </figure></div>
+
+  <!-- seam map -->
+  <div class="cell wide"><figure>
+    <div class="strip">
+      <div><div class="n">01 → 02</div><div class="t">Amber payoff holds, hard cut to black.</div><div class="s">cut</div></div>
+      <div><div class="n">02 → 03</div><div class="t">Chips keep x/y and fall into the slots.</div><div class="s">carry</div></div>
+      <div><div class="n">03 → 04</div><div class="t">Screen stays seated; rail draws in.</div><div class="s">carry</div></div>
+      <div><div class="n">04 → 05</div><div class="t">Rail steps ANALYZE → PLAN.</div><div class="s">carry</div></div>
+      <div><div class="n">05 → 06</div><div class="t">Rail completes to COMMUNICATE.</div><div class="s">carry</div></div>
+      <div><div class="n">06 → 07</div><div class="t">Memo scales 1.04, fades to flat canvas.</div><div class="s">dissolve</div></div>
+      <div><div class="n">07 · end</div><div class="t">Still hold, 2s. No motion at all.</div><div class="s">hold</div></div>
+    </div>
+    <div class="lbl"><b>Seam map</b><i>6 seams · 4 carry the rail or the chips</i></div>
+    <p class="note">The chips (02→03) and the pillar rail (04→06) are the two elements that cross frame boundaries. Both are pinned numerically in <code>STORYBOARD.md</code> so parallel frame builds cannot invent two versions of the same seam.</p>
+  </figure></div>
+
+  <!-- tokens -->
+  <div class="cell wide"><figure>
+    <div class="tok">
+      <div>
+        <h3>Palette — one accent, no exceptions</h3>
+        <div class="sw"><span style="background:#0F1115"></span> #0F1115 &nbsp;ground</div>
+        <div class="sw"><span style="background:#161A20"></span> #161A20 &nbsp;panel</div>
+        <div class="sw"><span style="background:#ECEAE4"></span> #ECEAE4 &nbsp;text</div>
+        <div class="sw"><span style="background:#9AA2AD"></span> #9AA2AD &nbsp;muted</div>
+        <div class="sw"><span style="background:#F5B83D"></span> #F5B83D &nbsp;accent (only)</div>
+        <div class="sw"><span style="background:#262B33"></span> #262B33 &nbsp;hairline</div>
+      </div>
+      <div>
+        <h3>Type roles</h3>
+        <ul>
+          <li><b style="color:var(--cream)">Display</b> — Geist 700, lowercase, −0.04em, 11.5cqw</li>
+          <li><b style="color:var(--cream)">H1 / H2</b> — Geist 700, lowercase, statement lines</li>
+          <li><b style="color:var(--cream)">Chrome</b> — Geist Mono, UPPERCASE, 0.14em tracking</li>
+          <li><b style="color:var(--cream)">Numbers</b> — mono, tabular, amber when load-bearing</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Bans</h3>
+        <ul class="ban">
+          <li>No second frame accent — red lives only inside captured screens</li>
+          <li>No rounded corners, no shadow, no gradient ground</li>
+          <li>No uppercase display, no italic</li>
+          <li>No invented numbers — every figure is real terminal output</li>
+          <li>No bouncy easing; moves are hard and precise</li>
+          <li>"Sample data" stays legible wherever Halcyon numbers show</li>
+        </ul>
+      </div>
+    </div>
+    <div class="lbl"><b>Tokens &amp; bans</b><i>frame.md · broadside, dark register</i></div>
+  </figure></div>
+</div>
+
+</body>
+</html>

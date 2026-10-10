@@ -1,0 +1,9 @@
+# Regenerable capture intermediates (re-run `hyperframes capture`).
+# Holds a ~1MB copy of the source site's DOM; the video builds from assets/ instead.
+capture/
+
+# Build + tooling output
+node_modules/
+renders/
+snapshots/
+.hyperframes/frame-packets/
