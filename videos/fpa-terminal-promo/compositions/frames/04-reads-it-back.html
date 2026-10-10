@@ -2,12 +2,12 @@
   <style>
     @font-face {
       font-family: "Geist";
-      src: url("../../assets/fonts/Geist-latin.woff2") format("woff2");
+      src: url("assets/fonts/Geist-latin.woff2") format("woff2");
       font-weight: 100 900; font-style: normal; font-display: block;
     }
     @font-face {
       font-family: "Geist Mono";
-      src: url("../../assets/fonts/GeistMono-latin.woff2") format("woff2");
+      src: url("assets/fonts/GeistMono-latin.woff2") format("woff2");
       font-weight: 100 900; font-style: normal; font-display: block;
     }
 
@@ -36,7 +36,7 @@
     .f04-layer { position: absolute; inset: 0; }
 
     /* ---- ground ---- */
-    .f04-ground { background: var(--f04-ink); z-index: 0; }
+    .f04-ground { background: var(--f04-sheet); z-index: 0; }
 
     /* ---- seated screen (full-bleed, scale 1.0, centered) ---- */
     .f04-screen { overflow: hidden; z-index: 1; }
@@ -198,12 +198,6 @@
 
     /* ---- statement ---- */
     .f04-statement { z-index: 5; }
-    .f04-rule {
-      position: absolute;
-      left: 150px; top: 712px;
-      width: 97px; height: 5px;
-      background: var(--f04-amber);
-    }
     .f04-say {
       position: absolute;
       left: 150px; top: 744px;
@@ -272,7 +266,6 @@
 
     <!-- closing statement -->
     <div id="f04-layer-t6" class="f04-layer f04-statement clip" data-start="0" data-duration="9" data-track-index="6">
-      <div id="f04-rule" class="f04-rule"></div>
       <div class="f04-say">
         <span class="f04-w">it</span> <span class="f04-w">reads</span>
         <span class="f04-w">the</span> <span class="f04-w">business</span><br />
@@ -418,18 +411,18 @@
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
 
-      /* seated states (handoff in: full-bleed, scale 1.0, opacity 1, centered) */
-      tl.set('#f04-dash', { opacity: 1, scale: 1 }, 0);
-      tl.set('#f04-var', { opacity: 0, scale: 1 }, 0);
-      tl.set('#f04-varwipe', { scaleX: 1, transformOrigin: 'right center', opacity: 0 }, 0);
-      tl.set(colEls, { scaleY: 1, transformOrigin: 'top center' }, 0);
-      tl.set(hairEls, { scaleX: 0, transformOrigin: 'left center' }, 0);
-      tl.set(deltaEls, { opacity: 0 }, 0);
-      tl.set('#f04-scrim', { opacity: 0 }, 0);
-      tl.set('#f04-rule', { scaleX: 0, transformOrigin: 'left center' }, 0);
-      tl.set('#f04-underline', { scaleX: 0, transformOrigin: 'left center' }, 0);
-      tl.set('#f04-dot', { color: '#ECEAE4' }, 0);
-      tl.set(wordEls, { opacity: 0 }, 0);
+      /* Seated states (handoff in: full-bleed, scale 1.0, opacity 1, centered).
+         Applied immediately, outside the paused timeline, so frame 0 renders them. */
+      gsap.set('#f04-dash', { opacity: 1, scale: 1 });
+      gsap.set('#f04-var', { opacity: 0, scale: 1 });
+      gsap.set('#f04-varwipe', { scaleX: 1, transformOrigin: 'right center', opacity: 0 });
+      gsap.set(colEls, { scaleY: 1, transformOrigin: 'top center' });
+      gsap.set(hairEls, { scaleX: 0, transformOrigin: 'left center' });
+      gsap.set(deltaEls, { opacity: 0 });
+      gsap.set('#f04-scrim', { opacity: 0 });
+      gsap.set('#f04-underline', { scaleX: 0, transformOrigin: 'left center' });
+      gsap.set('#f04-dot', { color: '#ECEAE4' });
+      gsap.set(wordEls, { opacity: 0 });
 
       /* ================= Scene 1 (0.0-1.2) — surface swap seats, rail draws ================= */
       tl.fromTo('#f04-sweep', { y: 0, opacity: 0 }, { opacity: 0.8, duration: 0.08, ease: 'none' }, 0.0);
@@ -510,7 +503,6 @@
 
       /* ================= Scene 4 (6.6-9.0) — the statement, held ================= */
       tl.to('#f04-scrim', { opacity: 1, duration: 0.42, ease: 'power2.out' }, 6.55);
-      tl.to('#f04-rule', { scaleX: 1, duration: 0.34, ease: 'power3.out' }, 6.6);
       for (var w = 0; w < wordEls.length; w++) {
         tl.fromTo(wordEls[w],
           { opacity: 0, y: 20, filter: 'blur(7px)' },
