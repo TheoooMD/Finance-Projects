@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "preferences": {
+    "style_preset.product-launch-video": {
+      "value": "broadside",
+      "confirmed_in": [
+        "fpa-terminal-promo"
+      ],
+      "updated_at": "2026-10-10T03:04:17.861Z"
+    },
+    "aspect": {
+      "value": "1080x1080",
+      "confirmed_in": [
+        "fpa-terminal-promo"
+      ],
+      "updated_at": "2026-10-10T03:04:17.932Z"
+    },
+    "destination": {
+      "value": "linkedin-feed",
+      "confirmed_in": [
+        "fpa-terminal-promo"
+      ],
+      "updated_at": "2026-10-10T03:04:18.000Z"
+    },
+    "language": {
+      "value": "en",
+      "confirmed_in": [
+        "fpa-terminal-promo"
+      ],
+      "updated_at": "2026-10-10T03:04:18.073Z"
+    },
+    "flow": {
+      "value": "automation",
+      "confirmed_in": [
+        "fpa-terminal-promo"
+      ],
+      "updated_at": "2026-10-10T03:04:18.173Z"
+    },
+    "storyboard": {
+      "value": "yes",
+      "confirmed_in": [
+        "fpa-terminal-promo"
+      ],
+      "updated_at": "2026-10-10T03:04:18.254Z"
+    }
+  },
+  "sightings": {}
+}
