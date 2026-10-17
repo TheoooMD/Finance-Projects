@@ -1,0 +1,5 @@
+# Licensed / proprietary source data: never commit
+PitchBook*
+*PitchBook*.xlsx
+*.xlsm
+fpa-terminal/test-data/
