@@ -12,6 +12,9 @@ backend, no install, no spreadsheet.
 ---
 
 ## What it does
+Why I built it: most FP&A work still runs on manual spreadsheets, where a broken link can silently distort the numbers. I wanted one tool that takes raw financial statements and produces a reliable close, model, valuation and board pack, with built-in checks so errors surface immediately.
+
+Highlights: month-end close workflow, integrated three-statement model with integrity checks, SaaS metrics and cohort retention, board-ready output.
 
 ### Load real financial statements
 - Reads PitchBook / Capital IQ-style Excel exports, SEC 10-K PDFs, CSV and TXT. Statement pages are found automatically in long filings (a 122-page 10-K is handled).
